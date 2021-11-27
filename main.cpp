@@ -1,12 +1,48 @@
 #include <iostream>
+using namespace std;
+
+int x = 181;
+int y = 60;
+char text[60][181];
+
+void clear()
+{
+    system ("CLS");
+}
+void draw()
+{
+
+    for (int i = 0; i < y ; i++)
+    {
+        for (int j = 0 ; j < x ; j++)
+        {
+            cout << text[i][j];
+        }
+    }
+}
 
 int main() {
-    printf("test");
-    printf("test1");
 
-    printf("test2asdasdasdas");
+    
+    //tvorba defaultného okna
+    
+    for (int i = 0; i < y ; i++)
+    {
+        for (int j = 0 ; j < x ; j++)
+        {
+            text[i][j] = ' ';
+        }
+    }
+    //---------------------
+    
 
-    printf("test2dasda");
+    draw();
 
-        return 0;
+    
+    text[30][60] = 'Q';
+    clear();
+    draw();
+    
+    system("PAUSE");
+    return 0;
 }
