@@ -1,9 +1,12 @@
 #include <iostream>
+#include <string>
 using namespace std;
 
-int x = 181;
-int y = 60;
-char text[60][181];
+const int x = 211;
+const int y = 48;
+string screen[y][x];
+bool game = true;
+string RiadkovyText= "";
 
 
 void clear()
@@ -14,12 +17,26 @@ void clear()
 
 void draw()
 {
-
     for (int i = 0; i < y ; i++)
+
     {
         for (int j = 0 ; j < x ; j++)
         {
-            cout << text[i][j];
+            RiadkovyText += screen[i][j];
+        }
+    cout <<RiadkovyText<< endl;
+    RiadkovyText = "";
+    }
+    
+
+}
+void pozadie()
+{
+     for (int i = 0; i < y ; i++)
+    {
+        for (int j = 0 ; j < x ; j++)
+        {
+            screen[i][j] = ' ';
         }
     }
 }
