@@ -14,7 +14,7 @@ int main() {
             int x = 105;
             int y = 25;
             
-            int speed = 1;
+            int speed = 2;
     };
     player player;
 
@@ -37,7 +37,7 @@ int main() {
             }
         if(GetKeyState('A') & 0x8000)
             {   
-                if (player.x > 0) 
+                if (player.x > 0 + player.speed) 
                     {
                     player.x -= player.speed;
                     }
@@ -45,7 +45,7 @@ int main() {
             }
         if(GetKeyState('W') & 0x8000)
             {   
-                if (player.y > 0) 
+                if (player.y > 0 + player.speed) 
                     {
                     player.y -= player.speed;
                     }
@@ -71,7 +71,7 @@ int main() {
 
 
         clear();
-        cout <<"start"<< endl;
+        cout <<"Health: 100"<< endl;
         draw();
         cout << "konec";
         
