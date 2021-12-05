@@ -72,7 +72,7 @@ int main() {
 
 
         clear();
-        cout <<"Health: 100"<< endl;
+        cout <<"Health: 100                  "<< "X:" << player.x <<"    Y:" << player.y << endl;
         draw();
         cout << "konec";
         
