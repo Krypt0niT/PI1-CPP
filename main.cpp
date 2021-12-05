@@ -14,7 +14,8 @@ int main() {
             int x = 105;
             int y = 25;
             
-            int speed = 2;
+            int speedY = 1;
+            int speedX = 2;
     };
     player player;
 
@@ -30,31 +31,31 @@ int main() {
 
         if(GetKeyState('D') & 0x8000)
             {  
-                if (player.x < x - player.speed) 
+                if (player.x < x - player.speedX) 
                     {
-                    player.x += player.speed;
+                    player.x += player.speedX;
                     }
             }
         if(GetKeyState('A') & 0x8000)
             {   
-                if (player.x > 0 + player.speed) 
+                if (player.x > 0 + player.speedX) 
                     {
-                    player.x -= player.speed;
+                    player.x -= player.speedX;
                     }
 
             }
         if(GetKeyState('W') & 0x8000)
             {   
-                if (player.y > 0 + player.speed) 
+                if (player.y > 0 + player.speedY) 
                     {
-                    player.y -= player.speed;
+                    player.y -= player.speedY;
                     }
             }
         if(GetKeyState('S') & 0x8000)
             {   
-                if (player.y < y-player.speed) 
+                if (player.y < y-player.speedY) 
                     {
-                    player.y += player.speed;
+                    player.y += player.speedY;
                     }
             }
 
