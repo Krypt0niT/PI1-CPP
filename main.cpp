@@ -53,7 +53,7 @@ int main() {
             }
         if(GetKeyState('S') & 0x8000)
             {   
-                if (player.y < y-player.speedY) 
+                if (player.y < (y-player.speedY)-1) 
                     {
                     player.y += player.speedY;
                     }
