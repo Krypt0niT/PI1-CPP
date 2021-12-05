@@ -13,6 +13,8 @@ int main() {
         public:
             int x = 105;
             int y = 25;
+            int width = 6;
+            int height = 3;
             
             int speedY = 1;
             int speedX = 2;
@@ -31,7 +33,7 @@ int main() {
 
         if(GetKeyState('D') & 0x8000)
             {  
-                if (player.x < x - player.speedX) 
+                if (player.x < x - player.speedX - player.width) 
                     {
                     player.x += player.speedX;
                     }
@@ -53,7 +55,7 @@ int main() {
             }
         if(GetKeyState('S') & 0x8000)
             {   
-                if (player.y < (y-player.speedY)-1) 
+                if (player.y < (y-player.speedY)-player.height) 
                     {
                     player.y += player.speedY;
                     }
@@ -66,13 +68,13 @@ int main() {
 
 
         pozadie();
-
-        screen[player.y][player.x] = "@";
-
-
+        
+        //zatial rucne spraveny character
+        playerDraw(player.x,player.y,player.width,player.height);
+        
 
         clear();
-        cout <<"Health: 100                  "<< "X:" << player.x <<"    Y:" << player.y << endl;
+        cout <<" Health: 100                  "<< "X:" << player.x <<"    Y:" << player.y << endl;
         draw();
         cout << "konec";
         
