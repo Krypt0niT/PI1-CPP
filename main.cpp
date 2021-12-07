@@ -1,6 +1,7 @@
 #include <Windows.h>
 #include <iostream>
 #include <string>
+#include <vector>
 #include "header.h"
 using namespace std;
 
@@ -25,6 +26,15 @@ int main() {
 
 
 
+
+
+    class bullet {
+        public:
+            int x;
+            int y;
+            char shape = '.';
+    };
+    bullet Bullet;
     while (game)
     {
         
@@ -79,7 +89,11 @@ int main() {
         {
             player.rotation = "dole";
         }
+        if (GetKeyState(32) & 0x8000) // t.j. medzerník
 
+        {
+            
+        }
 
 
 
@@ -94,7 +108,8 @@ int main() {
         clear();
         cout <<" Health: 100                  "<< "X:" << player.x <<"    Y:" << player.y << "     rotation: " << player.rotation << endl;
         draw();
-        cout << "konec";
+        
+
         
         
     }
