@@ -1,4 +1,4 @@
-
+﻿
 #include <iostream>
 #include <string>
 #include <vector>
@@ -133,4 +133,15 @@ void playerDraw(int x, int y, int W, int H, string rotation)
         screen[y + H][x + H - 1] = "\xB3";
     }
 }
+
+  void farba(int farba)                             // farba popredia + farba pozadia * 16
+{                                                   //  0 = Black       8 = Gray
+    HANDLE  hConsole;                               //  1 = Blue        9 = Light Blue
+    hConsole = GetStdHandle(STD_OUTPUT_HANDLE);     //  2 = Green       A = Light Green
+    SetConsoleTextAttribute(hConsole, farba);       //  3 = Aqua        B = Light Aqua                                              
+}                                                   //  4 = Red         C = Light Red
+  /*                                                    5 = Purple      D = Light Purple
+                                                        6 = Yellow      E = Light Yellow
+                                                        7 = White       F = Bright White
+ */
 

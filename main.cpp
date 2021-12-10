@@ -121,13 +121,15 @@ int main() {
 
 
         clear();
+        farba(4);
         cout << " Health: 100                  " << "X:" << player.x << "    Y:" << player.y << "     rotation: " << player.rotation << endl;
+        farba(6);
         draw();
 
 
     }
 
     clear();
-    
+    farba(0);
     return 0;
 }
