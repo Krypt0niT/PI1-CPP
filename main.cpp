@@ -205,7 +205,6 @@ int main() {
                 }
                 else{
                     bullet_list[i].exist = false;
-                    cout << " tak ti fuka";
                 }
             }
             else if (Br == "vlavo")
@@ -255,7 +254,7 @@ int main() {
         draw();
         if (bullet_list.size()>0)
         {
-        cout << bullet_list[0].exist<< "," <<bullet_list[0].x;
+        cout << "pocet vystrelených nabojov: " <<bullet_list.size();
         }
     }
 
