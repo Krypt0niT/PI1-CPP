@@ -134,6 +134,8 @@ void playerDraw(int x, int y, int W, int H, string rotation)
 
 
 
+
+
 void farba(int farba)                             // farba popredia + farba pozadia * 16
 {                                                   //  0 = Black       8 = Gray
     HANDLE  hConsole;                               //  1 = Blue        9 = Light Blue
