@@ -43,28 +43,28 @@ int main() {
         string rot;
         string tvar; 
 
-        Bullet(int playerX,int playerY , int UPGRADE, string rotation)
+        Bullet(int playerX,int playerY , int UPGRADE, string rotation, int playerW , int playerH)
         {
 
             if (rotation == "vpravo")
             {
-                x = playerX + 8;
-                y = playerY + 1;
+                x = playerX + playerW + 2;
+                y = playerY + (playerH / 2);
             }
             else if (rotation == "vlavo")
             {
                 x = playerX - 3;
-                y = playerY + 1;
+                y = playerY + (playerH / 2);
             }
             else if (rotation == "hore")
             {
-                x = playerX + 2;
+                x = playerX + (playerW/2);
                 y = playerY - 2;
             }
             else if (rotation == "dole")
             {
-                x = playerX + 2;
-                y = playerY + 4;
+                x = playerX + (playerW/2);
+                y = playerY + playerH + 1;
             }
 
             rot = rotation;
@@ -91,7 +91,7 @@ int main() {
     
     while (game)
     {
-        Bullet bullet(player.x,player.y, player.upgrade , player.rotation);
+        Bullet bullet(player.x,player.y, player.upgrade , player.rotation , player.width , player.height);
     //-----------------dynamicka aktualizacia pre constructor----------
 
 

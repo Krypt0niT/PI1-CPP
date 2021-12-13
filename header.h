@@ -124,11 +124,11 @@ void playerDraw(int x, int y, int W, int H, string rotation)
         }
         if (rotation == "hore")
         {
-            screen[y - 1][x + H - 1] = "|";   
+            screen[y - 1][x + (W/2)] = "|";   
         }
         if (rotation == "dole")
         {
-            screen[y + H][x + H - 1] = "|";   
+            screen[y + H][x + (W/2)] = "|";   
         }
 }
 
