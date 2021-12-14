@@ -25,7 +25,13 @@ int main() {
 
         int fireRate = 5;
         int fireCounter = 5;
-        
+
+        int reloadTime = 20;
+        int reloadCounter = 0;
+
+        int ammo = 7;
+        int maxAmmo = 7;
+
         string rotation = "vpravo";
     };
     player player;
@@ -97,6 +103,15 @@ int main() {
         Bullet bullet(player.x,player.y, player.upgrade , player.rotation , player.width , player.height);
     //-----------------dynamicka aktualizacia pre constructor----------
         player.fireCounter += 1;
+        if(player.ammo == 0)
+        {
+            player.reloadCounter += 1;
+            if (player.reloadCounter >= player.reloadTime)
+            {
+                player.ammo = player.maxAmmo;
+                player.reloadCounter = 0;
+            }
+        }
 
 
 
@@ -150,10 +165,14 @@ int main() {
 
         {
             //prida bullet
-            if(player.fireCounter >= player.fireRate)
+            if(player.ammo > 0)
             {
-            bullet_list.push_back(bullet);
-            player.fireCounter = 0;
+                if(player.fireCounter >= player.fireRate)
+                {
+                bullet_list.push_back(bullet);
+                player.fireCounter = 0;
+                player.ammo -= 1;
+                }
             }
         }
 
@@ -256,7 +275,7 @@ int main() {
 
         clear();
         farba(4);
-        cout << " Health: 100                  " << "X:" << player.x << "    Y:" << player.y << "     rotation: " << player.rotation << endl;
+        cout << " Health: 100                  " << "X:" << player.x << "    Y:" << player.y << "     rotation: " << player.rotation <<"    Ammo:" <<player.ammo <<"/"<< player.maxAmmo << endl;
         farba(2);
         draw();
         if (bullet_list.size()>0)
