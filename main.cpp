@@ -23,6 +23,9 @@ int main() {
         
         int upgrade = 0;
 
+        int fireRate = 5;
+        int fireCounter = 5;
+        
         string rotation = "vpravo";
     };
     player player;
@@ -93,7 +96,7 @@ int main() {
     {
         Bullet bullet(player.x,player.y, player.upgrade , player.rotation , player.width , player.height);
     //-----------------dynamicka aktualizacia pre constructor----------
-
+        player.fireCounter += 1;
 
 
 
@@ -147,7 +150,11 @@ int main() {
 
         {
             //prida bullet
+            if(player.fireCounter >= player.fireRate)
+            {
             bullet_list.push_back(bullet);
+            player.fireCounter = 0;
+            }
         }
 
         if (GetKeyState(27) & 0x8000) // esc
