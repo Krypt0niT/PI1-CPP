@@ -20,6 +20,17 @@ int main() {
 
         int speedY = 1;
         int speedX = 2;
+        
+        int upgrade = 0;
+
+        int fireRate = 5;
+        int fireCounter = 5;
+
+        int reloadTime = 20;
+        int reloadCounter = 0;
+
+        int ammo = 7;
+        int maxAmmo = 7;
 
         string rotation = "vpravo";
     };
@@ -29,23 +40,85 @@ int main() {
 
 
 
-    class bullet {
+    class Bullet { 
     public:
         int x;
         int y;
-        char shape = '.';
+        int dmg;
+        int speedX = 4;
+        int speedY = 2;
+        bool exist = true;
+
+        string rot;
+        string tvar; 
+
+        Bullet(int playerX,int playerY , int UPGRADE, string rotation, int playerW , int playerH)
+        {
+
+            if (rotation == "vpravo")
+            {
+                x = playerX + playerW + 2;
+                y = playerY + (playerH / 2);
+            }
+            else if (rotation == "vlavo")
+            {
+                x = playerX - 3;
+                y = playerY + (playerH / 2);
+            }
+            else if (rotation == "hore")
+            {
+                x = playerX + (playerW/2);
+                y = playerY - 2;
+            }
+            else if (rotation == "dole")
+            {
+                x = playerX + (playerW/2);
+                y = playerY + playerH + 1;
+            }
+
+            rot = rotation;
+
+            //urcovanie bulletu
+            switch (UPGRADE)
+            {
+            case 0:
+                tvar = "\xfa";
+                dmg = 1;
+                break;
+            
+            default:
+                tvar = "\xfa";
+                break;
+            }
+        }
+    
     };
 
+    typedef std::vector<Bullet> bullet_list_t;
+ 
+
+    bullet_list_t bullet_list;
+    
+
+
+    
+    char close = ' ';
     SetConsoleCP(437);
     SetConsoleOutputCP(437);
-
-
-    bullet Bullet;
     while (game)
     {
-
-
-
+        Bullet bullet(player.x,player.y, player.upgrade , player.rotation , player.width , player.height);
+    //-----------------dynamicka aktualizacia pre constructor----------
+        player.fireCounter += 1;
+        if(player.ammo == 0)
+        {
+            player.reloadCounter += 1;
+            if (player.reloadCounter >= player.reloadTime)
+            {
+                player.ammo = player.maxAmmo;
+                player.reloadCounter = 0;
+            }
+        }
 
 
 
@@ -98,7 +171,16 @@ int main() {
         if (GetKeyState(32) & 0x8000) // t.j. medzerník
 
         {
-
+            //prida bullet
+            if(player.ammo > 0)
+            {
+                if(player.fireCounter >= player.fireRate)
+                {
+                bullet_list.push_back(bullet);
+                player.fireCounter = 0;
+                player.ammo -= 1;
+                }
+            }
         }
 
         if (GetKeyState(27) & 0x8000) // esc
@@ -119,17 +201,87 @@ int main() {
         //zatial rucne spraveny character
         playerDraw(player.x, player.y, player.width, player.height, player.rotation);
 
+        //bullet draw
+        for (int i=0;i<bullet_list.size();i++)
+        {
+            if (bullet_list[i].exist)
+            {
+            
+            int By = bullet_list[i].y;
+            int Bx = bullet_list[i].x;
+            string Bt = bullet_list[i].tvar;
+            string Br = bullet_list[i].rot;
+            
+
+
+            
+            
+            screen[By][Bx] = Bt;
+            
+            //bullet move
+            if (Br == "vpravo")
+            { 
+                if (Bx < 211 - bullet_list[i].speedX) {
+                bullet_list[i].x += bullet_list[i].speedX;
+                }
+                else{
+                    bullet_list[i].exist = false;
+                }
+            }
+            else if (Br == "vlavo")
+            {
+                if (Bx > 0 + bullet_list[i].speedX) {
+                bullet_list[i].x -= bullet_list[i].speedX;
+                }
+                else{
+                    bullet_list[i].exist = false;
+                }
+            }
+            else if (Br == "hore")
+            {
+                if (By > 0 + bullet_list[i].speedY) {
+                bullet_list[i].y -= bullet_list[i].speedY;
+                }
+                else{
+                    bullet_list[i].exist = false;
+                }
+            }
+            else if (Br == "dole")
+            {
+                if (By < 49 - bullet_list[i].speedY) {
+                bullet_list[i].y += bullet_list[i].speedY;
+                }
+                else{
+                    bullet_list[i].exist = false;
+                }
+            }
+            }
+
+        }
+        
+
+
+
+
+
+
+
+
 
         clear();
         farba(4);
-        cout << " Health: 100                  " << "X:" << player.x << "    Y:" << player.y << "     rotation: " << player.rotation << endl;
-        farba(6);
+        cout << " Health: 100                  " << "X:" << player.x << "    Y:" << player.y << "     rotation: " << player.rotation <<"    Ammo:" <<player.ammo <<"/"<< player.maxAmmo << endl;
+        farba(7);
         draw();
+        if (bullet_list.size()>0)
+        {
 
-
+        }
     }
 
+
     clear();
-    farba(0);
+    farba(7);
     return 0;
 }
+
