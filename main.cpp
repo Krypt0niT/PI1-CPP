@@ -98,6 +98,24 @@ int main() {
 
     bullet_list_t bullet_list;
     
+    //---------bullet-------------
+    class Enemy { 
+    public:
+        int x = 20;
+        int y = 20;
+        
+        int width = 6;
+        int height = 3;
+    
+    };
+    typedef std::vector<Enemy> enemy_list_t;
+    Enemy enemy;
+    // Create the vector.
+    enemy_list_t enemy_list;
+
+    enemy_list.push_back(enemy);
+
+    
     while (game)
     {
         Bullet bullet(player.x,player.y, player.upgrade , player.rotation , player.width , player.height);
@@ -206,6 +224,19 @@ int main() {
         //zatial rucne spraveny character
         playerDraw(player.x, player.y, player.width, player.height, player.rotation);
 
+
+        
+
+
+
+
+
+
+
+
+
+
+
         //bullet draw
         for (int i=0;i<bullet_list.size();i++)
         {
@@ -263,8 +294,18 @@ int main() {
             }
 
         }
-        
-
+        //------------ENEMY-------------------
+        for (int k = 0 ; k < enemy_list.size() ; k++)
+            {
+                for (int i = 0 ; i < enemy_list[k].width; i++)
+                {
+                    for (int j = 0 ; j < enemy_list[k].height ; j++)
+                    {
+                        screen[enemy_list[k].y + j][enemy_list[k].x + i] = "█";
+                    }
+                }
+                
+            }
 
 
 
