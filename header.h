@@ -109,6 +109,15 @@ void playerDraw(int x, int y, int W, int H, string rotation)
                         continue;
                     }
                 }
+                if (i == 1)
+                {
+                    if (j == 1 || j == W - 2)
+                    {
+                        screen[y+i][x+j] = "O";
+                        continue;
+                    }
+                }
+
                 screen[y+i][x+j] = "█";
             }
         }

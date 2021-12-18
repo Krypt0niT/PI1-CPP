@@ -44,7 +44,7 @@ int main() {
     public:
         int x;
         int y;
-        int dmg;
+        int dmg = 1;
         int speedX = 4;
         int speedY = 2;
         bool exist = true;
@@ -98,14 +98,17 @@ int main() {
 
     bullet_list_t bullet_list;
     
-    //---------bullet-------------
+    //---------ENEMY-------------
     class Enemy { 
     public:
         int x = 20;
         int y = 20;
         
-        int width = 6;
+        int width = 5;
         int height = 3;
+
+        bool alive = true;
+        int health = 20;
     
     };
     typedef std::vector<Enemy> enemy_list_t;
@@ -208,6 +211,38 @@ int main() {
         }
 
 
+        //----------HIT-------------------
+        for (int enemy = 0; enemy < enemy_list.size() ; enemy++)
+        {
+            if (enemy_list[enemy].alive)
+            {
+                for (int bullet = 0 ; bullet < bullet_list.size(); bullet++)
+                {
+                    if (bullet_list[bullet].exist)
+                    {
+                        if (bullet_list[bullet].x >= enemy_list[enemy].x)
+                        {
+                            if (bullet_list[bullet].x <= enemy_list[enemy].x + enemy_list[enemy].width) 
+                            {
+                                if (bullet_list[bullet].y >= enemy_list[enemy].y)
+                                {
+                                    if (bullet_list[bullet].y <= enemy_list[enemy].y + enemy_list[enemy].height) 
+                                    {
+                                        
+                                        enemy_list[enemy].health -= bullet_list[bullet].dmg;
+                                        bullet_list[bullet].exist = false;
+                                        
+                                    }
+                                }
+                                
+                            }
+                        }
+
+                    }
+                }
+            }
+        }
+
         
         
 
@@ -294,6 +329,10 @@ int main() {
             }
 
         }
+
+
+
+
         //------------ENEMY-------------------
         for (int k = 0 ; k < enemy_list.size() ; k++)
             {
@@ -301,6 +340,30 @@ int main() {
                 {
                     for (int j = 0 ; j < enemy_list[k].height ; j++)
                     {
+                        if (j == 0)
+                        {
+                            if (i == 0 || i == enemy_list[k].width - 1)
+                            {
+                                screen[enemy_list[k].y + j][enemy_list[k].x + i] = "▄"; 
+                                continue;
+                            }
+                        }
+                        if (j == enemy_list[k].height - 1)
+                        {
+                            if (i == 0 || i == enemy_list[k].width - 1)
+                            {
+                                screen[enemy_list[k].y + j][enemy_list[k].x + i] = "▀";
+                                continue;
+                            }    
+                        }
+                        if (j == 1)
+                        {
+                            if (i == 1 || i == enemy_list[k].width -2)
+                            {
+                                screen[enemy_list[k].y + j][enemy_list[k].x + i] = "X";
+                                continue;
+                            }
+                        }
                         screen[enemy_list[k].y + j][enemy_list[k].x + i] = "█";
                     }
                 }
@@ -315,9 +378,9 @@ int main() {
 
 
         clear();
-        farba(4);
-        cout << " Health: 100                  " << "X:" << player.x << "    Y:" << player.y << "     rotation: " << player.rotation <<"    Ammo:" <<player.ammo <<"/"<< player.maxAmmo << endl;
-        farba(2);
+        //farba(4);
+        cout << " Health: 100                  " << "X:" << player.x << "    Y:" << player.y << "     rotation: " << player.rotation <<"    Ammo:" <<player.ammo <<"/"<< player.maxAmmo <<"                    "<< enemy_list[0].health <<endl;
+        //farba(2);
         draw();
         if (bullet_list.size()>0)
         {
