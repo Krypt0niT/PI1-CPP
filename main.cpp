@@ -232,6 +232,11 @@ int main() {
                                         enemy_list[enemy].health -= bullet_list[bullet].dmg;
                                         bullet_list[bullet].exist = false;
                                         
+                                        if (enemy_list[enemy].health <= 0)
+                                        {
+                                            enemy_list[enemy].alive = false;
+                                        }
+                                        
                                     }
                                 }
                                 
@@ -336,38 +341,40 @@ int main() {
         //------------ENEMY-------------------
         for (int k = 0 ; k < enemy_list.size() ; k++)
             {
-                for (int i = 0 ; i < enemy_list[k].width; i++)
+                if (enemy_list[k].alive) 
                 {
-                    for (int j = 0 ; j < enemy_list[k].height ; j++)
+                    for (int i = 0 ; i < enemy_list[k].width; i++)
                     {
-                        if (j == 0)
+                        for (int j = 0 ; j < enemy_list[k].height ; j++)
                         {
-                            if (i == 0 || i == enemy_list[k].width - 1)
+                            if (j == 0)
                             {
-                                screen[enemy_list[k].y + j][enemy_list[k].x + i] = "▄"; 
-                                continue;
+                                if (i == 0 || i == enemy_list[k].width - 1)
+                                {
+                                    screen[enemy_list[k].y + j][enemy_list[k].x + i] = "▄"; 
+                                    continue;
+                                }
                             }
-                        }
-                        if (j == enemy_list[k].height - 1)
-                        {
-                            if (i == 0 || i == enemy_list[k].width - 1)
+                            if (j == enemy_list[k].height - 1)
                             {
-                                screen[enemy_list[k].y + j][enemy_list[k].x + i] = "▀";
-                                continue;
-                            }    
-                        }
-                        if (j == 1)
-                        {
-                            if (i == 1 || i == enemy_list[k].width -2)
-                            {
-                                screen[enemy_list[k].y + j][enemy_list[k].x + i] = "X";
-                                continue;
+                                if (i == 0 || i == enemy_list[k].width - 1)
+                                {
+                                    screen[enemy_list[k].y + j][enemy_list[k].x + i] = "▀";
+                                    continue;
+                                }    
                             }
+                            if (j == 1)
+                            {
+                                if (i == 1 || i == enemy_list[k].width -2)
+                                {
+                                    screen[enemy_list[k].y + j][enemy_list[k].x + i] = "X";
+                                    continue;
+                                }
+                            }
+                            screen[enemy_list[k].y + j][enemy_list[k].x + i] = "█";
                         }
-                        screen[enemy_list[k].y + j][enemy_list[k].x + i] = "█";
                     }
-                }
-                
+                } 
             }
 
 
