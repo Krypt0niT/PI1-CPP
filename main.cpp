@@ -30,6 +30,16 @@ public:
     int burst = 1;
 
     string rotation = "vpravo";
+
+
+    void ChangeWeapon(int Upgrade, int FireRate, int ReloadTime, int MaxAmmo, int Burst) { 
+        upgrade = Upgrade;
+        fireRate = FireRate;
+        reloadTime = ReloadTime;
+        maxAmmo = MaxAmmo;
+        burst = Burst;
+        ammo = MaxAmmo;
+    }
 };
 
 class Bullet {
@@ -40,6 +50,7 @@ public:
     int speedX = 4;
     int speedY = 2;
     bool exist = true;
+    int pellets = 1;
 
     string rot;
     string tvar;
@@ -84,6 +95,14 @@ public:
         }
     }
 
+    void ChangeWeapon(int Dmg, int SpeedX, int SpeedY, string Tvar, int Pellets) {
+        dmg = Dmg;
+        speedX = SpeedX;
+        speedY = SpeedY;
+        tvar = Tvar;
+        pellets = Pellets;
+    }
+
 };
 //---------ENEMY-------------
 class Enemy {
@@ -110,10 +129,11 @@ int main() {
     string nazov[22] = { "pistol","revolver","pistol+","Double barrel shotgun","Hunting rifle","Atomatic pistol","Pump action shotgun", "Bolt action rifle","Semiautomatic rifle","smg", "Semi automatic shotgun", "Pump action shotgun +", "DMR", "Battle rifle", "Burst rifle", "Smg ++", "Automatic shotgun", "Pump action shotgun ++", "Sniper rifle", "Automatic rifle", "burst rifle+", "Smg++" };
     int ammo[22] = { 7, 6, 17, 2, 5, 20, 5, 5, 20, 30, 5, 7, 10, 20, 30, 30, 20, 8, 10, 30, 30, 50 };
     int reload[22] = { 15, 20, 10, 20, 15, 10, 20, 15, 20, 10 , 20, 15, 20, 20, 20, 10, 30, 14, 30, 18, 15, 10 };
-    int fireRate[22] = { 5, 3, 7, 2, 3, 20, 5, 2, 8, 17, 7, 5, 5, 12, 40, 18, 10, 6, 5, 15, 40, 20 };
-    int dmg[22] = { 5, 10, 5, 7, 25, 5, 10, 40, 25, 7, 10, 15, 50, 35, 25, 10, 15, 20, 75, 40, 30, 15};
-    int speed[22] = { 4, 4, 4, 4, 8, 6, 4, 8, 8, 6, 4, 4, 8, 8, 8, 6, 4, 4, 8, 8, 8, 6};
+    int fireRate[22] = { 7, 10, 4, 15, 16, 2, 13, 16, 7, 3, 7, 11, 10, 5, 15, 2, 4, 8, 15, 3, 20, 1 };
+    int dmg[22] = { 5, 10, 5, 7, 25, 5, 10, 40, 25, 7, 10, 15, 50, 35, 25, 10, 15, 20, 125, 40, 30, 15};
+    int speed[22] = { 4, 4, 4, 4, 8, 6, 4, 8, 8, 6, 4, 4, 10, 8, 8, 6, 4, 4, 10, 8, 8, 6};
     string shape[22] = {".",".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", "." };
+    //string shape[22] = {"·","•", "·", "∴", "•", "·", "∴", "·", "·", "·", "∴", "∴", "●", "•", "•", "·", "∴", "∴", "●", "•", "•", "·" };
     int pellets[22] = { 1, 1, 1, 3, 1, 1, 1, 1, 1, 3, 3, 1, 1, 1, 1, 3, 3, 1, 1, 1, 1, 1 };
     int burst[22] = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 3, 1 };
 
@@ -122,9 +142,14 @@ int main() {
 
     }
 
+    Weapon current_weapon = weapon_list[15];
+
+    player.ChangeWeapon(current_weapon.id_upgrade, current_weapon.fireRate, current_weapon.reloadTime, current_weapon.ammo, current_weapon.burst);
+
     typedef std::vector<Bullet> bullet_list_t;
  
     bullet_list_t bullet_list;
+
 
     typedef std::vector<Enemy> enemy_list_t;
     Enemy enemy;
@@ -137,7 +162,8 @@ int main() {
     SetConsoleOutputCP(437);
 
     while (game)
-    {
+    {   
+
         Bullet bullet(player.x,player.y, player.upgrade , player.rotation , player.width , player.height);
     //-----------------dynamicka aktualizacia pre constructor----------
         player.fireCounter += 1;
@@ -151,6 +177,7 @@ int main() {
             }
         }
 
+        bullet.ChangeWeapon(current_weapon.dmg, current_weapon.speedX, current_weapon.speedY, current_weapon.tvar, current_weapon.pellets);
 
 
         if (GetKeyState('D') & 0x8000)
@@ -219,7 +246,6 @@ int main() {
             game = false;
             char close = ' ';
             cout << "close?(Y/N)";
-            cout << weapon_list[10].ammo;
             cin >> close;
             close = ((char)toupper(close));
             if (close == 'Y')
@@ -404,7 +430,7 @@ int main() {
 
         clear();
         //farba(4);
-        cout << " Health: 100                  " << "X:" << player.x << "    Y:" << player.y << "     rotation: " << player.rotation <<"    Ammo:" <<player.ammo <<"/"<< player.maxAmmo <<"                    "<< enemy_list[0].health <<endl;
+        cout << " Health: 100                  " << "X:" << player.x << "    Y:" << player.y << "     rotation: " << player.rotation <<"    Ammo:" <<player.ammo <<"/"<< player.maxAmmo <<"                    "<< enemy_list[0].health <<"                    "<< current_weapon.name  <<endl;
         //farba(2);
         draw();
         if (bullet_list.size()>0)
