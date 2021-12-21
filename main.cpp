@@ -108,7 +108,7 @@ int main() {
         int height = 3;
 
         bool alive = true;
-        int health = 20;
+        int health = 5;
     
     };
     typedef std::vector<Enemy> enemy_list_t;
@@ -116,7 +116,15 @@ int main() {
     // Create the vector.
     enemy_list_t enemy_list;
 
-    enemy_list.push_back(enemy);
+
+
+    //----------SPAWN----------------
+    for (int i ; i < Enemies ; i++)
+    {
+        enemy_list.push_back(enemy);
+        enemy_list[i].x = random(5,200);
+        enemy_list[i].y = random(5,40);
+    }
 
     
     while (game)
@@ -386,7 +394,7 @@ int main() {
 
         clear();
         //farba(4);
-        cout << " Health: 100                  " << "X:" << player.x << "    Y:" << player.y << "     rotation: " << player.rotation <<"    Ammo:" <<player.ammo <<"/"<< player.maxAmmo <<"                    "<< enemy_list[0].health <<endl;
+        cout << " Health: 100                  " << "X:" << player.x << "    Y:" << player.y << "     rotation: " << player.rotation <<"    Ammo:" <<player.ammo <<"/"<< player.maxAmmo <<"                    "<< enemy_list[0].health <<"        "<< random(5,15)<<endl;
         //farba(2);
         draw();
         if (bullet_list.size()>0)
