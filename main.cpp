@@ -6,105 +6,136 @@
 #include <ctype.h>
 using namespace std;
 
+class player {
+public:
+    int x = 105;
+    int y = 25;
+    int width = 5;
+    int height = 3;
+
+    int speedY = 1;
+    int speedX = 2;
+
+    int upgrade = 0;
+
+    int fireRate = 5;
+    int fireCounter = 5;
+
+    int reloadTime = 20;
+    int reloadCounter = 0;
+
+    int ammo = 7;
+    int maxAmmo = 7;
+
+    int burst = 1;
+
+    string rotation = "vpravo";
+};
+
+class Bullet {
+public:
+    int x;
+    int y;
+    int dmg = 1;
+    int speedX = 4;
+    int speedY = 2;
+    bool exist = true;
+
+    string rot;
+    string tvar;
+
+    Bullet(int playerX, int playerY, int UPGRADE, string rotation, int playerW, int playerH)
+    {
+
+        if (rotation == "vpravo")
+        {
+            x = playerX + playerW + 2;
+            y = playerY + (playerH / 2);
+        }
+        else if (rotation == "vlavo")
+        {
+            x = playerX - 3;
+            y = playerY + (playerH / 2);
+        }
+        else if (rotation == "hore")
+        {
+            x = playerX + (playerW / 2);
+            y = playerY - 2;
+        }
+        else if (rotation == "dole")
+        {
+            x = playerX + (playerW / 2);
+            y = playerY + playerH + 1;
+        }
+
+        rot = rotation;
+
+        //urcovanie bulletu
+        switch (UPGRADE)
+        {
+        case 0:
+            tvar = "\xfa";
+            dmg = 1;
+            break;
+
+        default:
+            tvar = "\xfa";
+            break;
+        }
+    }
+
+};
+//---------ENEMY-------------
+class Enemy {
+public:
+    int x = 20;
+    int y = 20;
+
+    int width = 5;
+    int height = 3;
+
+    bool alive = true;
+    int health = 20;
+
+};
 
 int main() {
 
-
-
-    class player {
-    public:
-        int x = 105;
-        int y = 25;
-        int width = 5;
-        int height = 3;
-
-        int speedY = 1;
-        int speedX = 2;
-        
-        int upgrade = 0;
-
-        int fireRate = 5;
-        int fireCounter = 5;
-
-        int reloadTime = 20;
-        int reloadCounter = 0;
-
-        int ammo = 7;
-        int maxAmmo = 7;
-
-        string rotation = "vpravo";
-    };
     player player;
 
+    typedef std::vector<Weapon> weapon_list_t;
 
+    weapon_list_t weapon_list;
 
+    string nazov[22] = { "pistol","revolver","pistol+","Double barrel shotgun","Hunting rifle","Atomatic pistol","Pump action shotgun", "Bolt action rifle","Semiautomatic rifle","smg", "Semi automatic shotgun", "Pump action shotgun +", "DMR", "Battle rifle", "Burst rifle", "Smg ++", "Automatic shotgun", "Pump action shotgun ++", "Sniper rifle", "Automatic rifle", "burst rifle+", "Smg++" };
+    int ammo[22] = { 7, 6, 17, 2, 5, 20, 5, 5, 20, 30, 5, 7, 10, 20, 30, 30, 20, 8, 10, 30, 30, 50 };
+    int reload[22] = { 15, 20, 10, 20, 15, 10, 20, 15, 20, 10 , 20, 15, 20, 20, 20, 10, 30, 14, 30, 18, 15, 10 };
+    int fireRate[22] = { 5, 3, 7, 2, 3, 20, 5, 2, 8, 17, 7, 5, 5, 12, 40, 18, 10, 6, 5, 15, 40, 20 };
+    int dmg[22] = { 5, 10, 5, 7, 25, 5, 10, 40, 25, 7, 10, 15, 50, 35, 25, 10, 15, 20, 75, 40, 30, 15};
+    int speed[22] = { 4, 4, 4, 4, 8, 6, 4, 8, 8, 6, 4, 4, 8, 8, 8, 6, 4, 4, 8, 8, 8, 6};
+    string shape[22] = {".",".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", "." };
+    int pellets[22] = { 1, 1, 1, 3, 1, 1, 1, 1, 1, 3, 3, 1, 1, 1, 1, 3, 3, 1, 1, 1, 1, 1 };
+    int burst[22] = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 3, 1 };
 
+    for (int i = 0; i < 22; i++) {
+        weapon_list.push_back(Weapon(i, nazov[i], ammo[i], reload[i], fireRate[i], dmg[i], speed[i], shape[i], pellets[i], burst[i]));
 
-    class Bullet { 
-    public:
-        int x;
-        int y;
-        int dmg;
-        int speedX = 4;
-        int speedY = 2;
-        bool exist = true;
-
-        string rot;
-        string tvar; 
-
-        Bullet(int playerX,int playerY , int UPGRADE, string rotation, int playerW , int playerH)
-        {
-
-            if (rotation == "vpravo")
-            {
-                x = playerX + playerW + 2;
-                y = playerY + (playerH / 2);
-            }
-            else if (rotation == "vlavo")
-            {
-                x = playerX - 3;
-                y = playerY + (playerH / 2);
-            }
-            else if (rotation == "hore")
-            {
-                x = playerX + (playerW/2);
-                y = playerY - 2;
-            }
-            else if (rotation == "dole")
-            {
-                x = playerX + (playerW/2);
-                y = playerY + playerH + 1;
-            }
-
-            rot = rotation;
-
-            //urcovanie bulletu
-            switch (UPGRADE)
-            {
-            case 0:
-                tvar = "\xfa";
-                dmg = 1;
-                break;
-            
-            default:
-                tvar = "\xfa";
-                break;
-            }
-        }
-    
-    };
+    }
 
     typedef std::vector<Bullet> bullet_list_t;
  
-
     bullet_list_t bullet_list;
-    
 
+    typedef std::vector<Enemy> enemy_list_t;
+    Enemy enemy;
+    // Create the vector.
+    enemy_list_t enemy_list;
 
-    
-    char close = ' ';
+    enemy_list.push_back(enemy);
+
     SetConsoleCP(437);
     SetConsoleOutputCP(437);
+
     while (game)
     {
         Bullet bullet(player.x,player.y, player.upgrade , player.rotation , player.width , player.height);
@@ -186,7 +217,9 @@ int main() {
         if (GetKeyState(27) & 0x8000) // esc
         {
             game = false;
+            char close = ' ';
             cout << "close?(Y/N)";
+            cout << weapon_list[10].ammo;
             cin >> close;
             close = ((char)toupper(close));
             if (close == 'Y')
@@ -196,10 +229,71 @@ int main() {
         }
 
 
+        //----------HIT-------------------
+        for (int enemy = 0; enemy < enemy_list.size() ; enemy++)
+        {
+            if (enemy_list[enemy].alive)
+            {
+                for (int bullet = 0 ; bullet < bullet_list.size(); bullet++)
+                {
+                    if (bullet_list[bullet].exist)
+                    {
+                        if (bullet_list[bullet].x >= enemy_list[enemy].x)
+                        {
+                            if (bullet_list[bullet].x <= enemy_list[enemy].x + enemy_list[enemy].width) 
+                            {
+                                if (bullet_list[bullet].y >= enemy_list[enemy].y)
+                                {
+                                    if (bullet_list[bullet].y <= enemy_list[enemy].y + enemy_list[enemy].height) 
+                                    {
+                                        
+                                        enemy_list[enemy].health -= bullet_list[bullet].dmg;
+                                        bullet_list[bullet].exist = false;
+                                        
+                                        if (enemy_list[enemy].health <= 0)
+                                        {
+                                            enemy_list[enemy].alive = false;
+                                        }
+                                        
+                                    }
+                                }
+                                
+                            }
+                        }
+
+                    }
+                }
+            }
+        }
+
+        
+        
+
+
+
+
+
+
+
+
+
         pozadie();
 
         //zatial rucne spraveny character
         playerDraw(player.x, player.y, player.width, player.height, player.rotation);
+
+
+        
+
+
+
+
+
+
+
+
+
+
 
         //bullet draw
         for (int i=0;i<bullet_list.size();i++)
@@ -262,6 +356,46 @@ int main() {
 
 
 
+        //------------ENEMY-------------------
+        for (int k = 0 ; k < enemy_list.size() ; k++)
+            {
+                if (enemy_list[k].alive) 
+                {
+                    for (int i = 0 ; i < enemy_list[k].width; i++)
+                    {
+                        for (int j = 0 ; j < enemy_list[k].height ; j++)
+                        {
+                            if (j == 0)
+                            {
+                                if (i == 0 || i == enemy_list[k].width - 1)
+                                {
+                                    screen[enemy_list[k].y + j][enemy_list[k].x + i] = "\xdc"; 
+                                    continue;
+                                }
+                            }
+                            if (j == enemy_list[k].height - 1)
+                            {
+                                if (i == 0 || i == enemy_list[k].width - 1)
+                                {
+                                    screen[enemy_list[k].y + j][enemy_list[k].x + i] = "\xdf";
+                                    continue;
+                                }    
+                            }
+                            if (j == 1)
+                            {
+                                if (i == 1 || i == enemy_list[k].width -2)
+                                {
+                                    screen[enemy_list[k].y + j][enemy_list[k].x + i] = "X";
+                                    continue;
+                                }
+                            }
+                            screen[enemy_list[k].y + j][enemy_list[k].x + i] = "\xdb";
+                        }
+                    }
+                } 
+            }
+
+
 
 
 
@@ -269,13 +403,13 @@ int main() {
 
 
         clear();
-        farba(4);
-        cout << " Health: 100                  " << "X:" << player.x << "    Y:" << player.y << "     rotation: " << player.rotation <<"    Ammo:" <<player.ammo <<"/"<< player.maxAmmo << endl;
-        farba(7);
+        //farba(4);
+        cout << " Health: 100                  " << "X:" << player.x << "    Y:" << player.y << "     rotation: " << player.rotation <<"    Ammo:" <<player.ammo <<"/"<< player.maxAmmo <<"                    "<< enemy_list[0].health <<endl;
+        //farba(2);
         draw();
         if (bullet_list.size()>0)
         {
-
+            cout << "pocet vystrelených nabojov: " << bullet_list.size();
         }
     }
 
@@ -284,4 +418,5 @@ int main() {
     farba(7);
     return 0;
 }
+
 
