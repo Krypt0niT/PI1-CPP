@@ -120,13 +120,17 @@ public:
 
 int main() {
 
+    int kills = 0, upgrade = 10;
+
+    float multiplier = 0;
+
     player player;
 
     typedef std::vector<Weapon> weapon_list_t;
 
     weapon_list_t weapon_list;
 
-    string nazov[22] = { "pistol","revolver","pistol+","Double barrel shotgun","Hunting rifle","Atomatic pistol","Pump action shotgun", "Bolt action rifle","Semiautomatic rifle","smg", "Semi automatic shotgun", "Pump action shotgun +", "DMR", "Battle rifle", "Burst rifle", "Smg ++", "Automatic shotgun", "Pump action shotgun ++", "Sniper rifle", "Automatic rifle", "burst rifle+", "Smg++" };
+    string nazov[22] = { "pistol","revolver","pistol+","Double barrel shotgun","Hunting rifle","Atomatic pistol","Pump action shotgun", "Bolt action rifle","Semiautomatic rifle","smg", "Semi automatic shotgun", "Pump action shotgun +", "DMR", "Battle rifle", "Burst rifle", "Smg +", "Automatic shotgun", "Pump action shotgun ++", "Sniper rifle", "Automatic rifle", "burst rifle+", "Smg++" };
     int ammo[22] = { 7, 6, 17, 2, 5, 20, 5, 5, 20, 30, 5, 7, 10, 20, 30, 30, 20, 8, 10, 30, 30, 50 };
     int reload[22] = { 15, 20, 10, 20, 15, 10, 20, 15, 20, 10 , 20, 15, 20, 20, 20, 10, 30, 14, 30, 18, 15, 10 };
     int fireRate[22] = { 7, 10, 4, 15, 16, 2, 13, 16, 7, 3, 7, 11, 10, 5, 15, 2, 4, 8, 15, 3, 20, 1 };
@@ -141,7 +145,7 @@ int main() {
 
             }
 
-    Weapon current_weapon = weapon_list[15];
+    Weapon current_weapon = weapon_list[0];
             
     player.ChangeWeapon(current_weapon.id_upgrade, current_weapon.fireRate, current_weapon.reloadTime, current_weapon.ammo, current_weapon.burst);
     
@@ -280,6 +284,66 @@ int main() {
             else
                 game = true;
         }
+        if (GetKeyState(49) & 0x8000) {
+            if (kills == upgrade + upgrade * multiplier)
+            {
+                if (current_weapon.id_upgrade == 0)
+                {
+                    current_weapon = weapon_list[current_weapon.id_upgrade + 1];
+                }
+                else if (current_weapon.id_upgrade == 1 || current_weapon.id_upgrade == 2)
+                {
+                    current_weapon = weapon_list[current_weapon.id_upgrade + 2];
+                }
+                else if (current_weapon.id_upgrade == 3 || current_weapon.id_upgrade == 4)
+                {
+                    current_weapon = weapon_list[current_weapon.id_upgrade + 3];
+                }
+                else if (current_weapon.id_upgrade == 5 || current_weapon.id_upgrade == 6)
+                {
+                    current_weapon = weapon_list[current_weapon.id_upgrade + 4];
+                }
+                else if (current_weapon.id_upgrade == 7 || current_weapon.id_upgrade == 8)
+                {
+                    current_weapon = weapon_list[current_weapon.id_upgrade + 5];
+                }
+                else if (current_weapon.id_upgrade == 9 || current_weapon.id_upgrade == 10 || current_weapon.id_upgrade == 11 || current_weapon.id_upgrade == 12 || current_weapon.id_upgrade == 13 || current_weapon.id_upgrade == 14 || current_weapon.id_upgrade == 15)
+                {
+                    current_weapon = weapon_list[current_weapon.id_upgrade + 6];
+                }
+                multiplier += 0.5;
+                kills = 0;
+            }
+            player.ChangeWeapon(current_weapon.id_upgrade, current_weapon.fireRate, current_weapon.reloadTime, current_weapon.ammo, current_weapon.burst);
+
+        }
+        if (GetKeyState(50) & 0x8000) {
+            if (kills == upgrade + upgrade * multiplier) {
+                if (current_weapon.id_upgrade == 0)
+                {
+                    current_weapon = weapon_list[current_weapon.id_upgrade + 2];        
+                }
+                else if (current_weapon.id_upgrade == 1 || current_weapon.id_upgrade == 2)
+                {
+                    current_weapon = weapon_list[current_weapon.id_upgrade + 3];
+                }
+                else if (current_weapon.id_upgrade == 4)
+                {
+                    current_weapon = weapon_list[current_weapon.id_upgrade + 4];
+                }
+                else if (current_weapon.id_upgrade == 6)
+                {
+                    current_weapon = weapon_list[current_weapon.id_upgrade + 5];
+                }
+                else if (current_weapon.id_upgrade == 7 || current_weapon.id_upgrade == 8)
+                {
+                    current_weapon = weapon_list[current_weapon.id_upgrade + 6];
+                }
+                multiplier += 0.5;
+                kills = 0;
+            }
+            player.ChangeWeapon(current_weapon.id_upgrade, current_weapon.fireRate, current_weapon.reloadTime, current_weapon.ammo, current_weapon.burst);
+        }
 
 
         //----------HIT-------------------
@@ -306,6 +370,7 @@ int main() {
                                         if (enemy_list[enemy].health <= 0)
                                         {
                                             enemy_list[enemy].alive = false;
+                                            kills++;
                                         }
                                         
                                     }
@@ -456,9 +521,7 @@ int main() {
 
 
         clear();
-
-        cout << " Health: 100                  " << "X:" << player.x << "    Y:" << player.y << "     rotation: " << player.rotation <<"    Ammo:" <<player.ammo <<"/"<< player.maxAmmo <<"                    "<< enemy_list[0].health <<"                    "<< current_weapon.name  <<endl;
-
+        cout << " Health: 100                  " << "X:" << player.x << "    Y:" << player.y << "     rotation: " << player.rotation <<"    Ammo:" <<player.ammo <<"/"<< player.maxAmmo <<"                    "<< enemy_list[0].health <<"                    "<< current_weapon.name <<"                  "<< kills <<"/"<< upgrade  <<endl;
         draw();
         if (bullet_list.size()>0)
         {
