@@ -6,129 +6,191 @@
 #include <ctype.h>
 using namespace std;
 
+class player {
+public:
+    int x = 105;
+    int y = 25;
+    int width = 5;
+    int height = 3;
+
+    int speedY = 1;
+    int speedX = 2;
+
+    int upgrade = 0;
+
+    int fireRate = 5;
+    int fireCounter = 5;
+
+    int reloadTime = 20;
+    int reloadCounter = 0;
+
+    int ammo = 7;
+    int maxAmmo = 7;
+
+    int burst = 1;
+
+    string rotation = "vpravo";
+
+
+    void ChangeWeapon(int Upgrade, int FireRate, int ReloadTime, int MaxAmmo, int Burst) { 
+        upgrade = Upgrade;
+        fireRate = FireRate;
+        reloadTime = ReloadTime;
+        maxAmmo = MaxAmmo;
+        burst = Burst;
+        ammo = MaxAmmo;
+    }
+};
+
+class Bullet {
+public:
+    int x;
+    int y;
+    int dmg = 1;
+    int speedX = 4;
+    int speedY = 2;
+    bool exist = true;
+    int pellets = 1;
+
+    string rot;
+    string tvar;
+
+    Bullet(int playerX, int playerY, int UPGRADE, string rotation, int playerW, int playerH)
+    {
+
+        if (rotation == "vpravo")
+        {
+            x = playerX + playerW + 2;
+            y = playerY + (playerH / 2);
+        }
+        else if (rotation == "vlavo")
+        {
+            x = playerX - 3;
+            y = playerY + (playerH / 2);
+        }
+        else if (rotation == "hore")
+        {
+            x = playerX + (playerW / 2);
+            y = playerY - 2;
+        }
+        else if (rotation == "dole")
+        {
+            x = playerX + (playerW / 2);
+            y = playerY + playerH + 1;
+        }
+
+        rot = rotation;
+
+        //urcovanie bulletu
+        switch (UPGRADE)
+        {
+        case 0:
+            tvar = "\xfa";
+            dmg = 1;
+            break;
+
+        default:
+            tvar = "\xfa";
+            break;
+        }
+    }
+
+    void ChangeWeapon(int Dmg, int SpeedX, int SpeedY, string Tvar, int Pellets) {
+        dmg = Dmg;
+        speedX = SpeedX;
+        speedY = SpeedY;
+        tvar = Tvar;
+        pellets = Pellets;
+    }
+
+};
+//---------ENEMY-------------
+class Enemy {
+public:
+    int x = 20;
+    int y = 20;
+
+    int width = 5;
+    int height = 3;
+
+    bool alive = true;
+    int health = 20;
+
+};
 
 int main() {
 
-
-
-    class player {
-    public:
-        int x = 105;
-        int y = 25;
-        int width = 5;
-        int height = 3;
-
-        int speedY = 1;
-        int speedX = 2;
-        
-        int upgrade = 0;
-
-        int fireRate = 5;
-        int fireCounter = 5;
-
-        int reloadTime = 20;
-        int reloadCounter = 0;
-
-        int ammo = 7;
-        int maxAmmo = 7;
-
-        string rotation = "vpravo";
-    };
     player player;
 
+    typedef std::vector<Weapon> weapon_list_t;
 
+    weapon_list_t weapon_list;
 
+    string nazov[22] = { "pistol","revolver","pistol+","Double barrel shotgun","Hunting rifle","Atomatic pistol","Pump action shotgun", "Bolt action rifle","Semiautomatic rifle","smg", "Semi automatic shotgun", "Pump action shotgun +", "DMR", "Battle rifle", "Burst rifle", "Smg ++", "Automatic shotgun", "Pump action shotgun ++", "Sniper rifle", "Automatic rifle", "burst rifle+", "Smg++" };
+    int ammo[22] = { 7, 6, 17, 2, 5, 20, 5, 5, 20, 30, 5, 7, 10, 20, 30, 30, 20, 8, 10, 30, 30, 50 };
+    int reload[22] = { 15, 20, 10, 20, 15, 10, 20, 15, 20, 10 , 20, 15, 20, 20, 20, 10, 30, 14, 30, 18, 15, 10 };
+    int fireRate[22] = { 7, 10, 4, 15, 16, 2, 13, 16, 7, 3, 7, 11, 10, 5, 15, 2, 4, 8, 15, 3, 20, 1 };
+    int dmg[22] = { 5, 10, 5, 7, 25, 5, 10, 40, 25, 7, 10, 15, 50, 35, 25, 10, 15, 20, 125, 40, 30, 15};
+    int speed[22] = { 4, 4, 4, 4, 8, 6, 4, 8, 8, 6, 4, 4, 10, 8, 8, 6, 4, 4, 10, 8, 8, 6};
+    string shape[22] = {"·","•", "·", "∴", "•", "·", "∴", "·", "·", "·", "∴", "∴", "●", "•", "•", "·", "∴", "∴", "●", "•", "•", "·" };
+    int pellets[22] = { 1, 1, 1, 3, 1, 1, 1, 1, 1, 3, 3, 1, 1, 1, 1, 3, 3, 1, 1, 1, 1, 1 };
+    int burst[22] = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 3, 1 };
 
+    for (int i = 0; i < 22; i++) {
+        weapon_list.push_back(Weapon(i, nazov[i], ammo[i], reload[i], fireRate[i], dmg[i], speed[i], shape[i], pellets[i], burst[i]));
 
-    class Bullet { 
-    public:
-        int x;
-        int y;
-        int dmg = 1;
-        int speedX = 4;
-        int speedY = 2;
-        bool exist = true;
-
-        string rot;
-        string tvar; 
-
-        Bullet(int playerX,int playerY , int UPGRADE, string rotation, int playerW , int playerH)
-        {
-
-            if (rotation == "vpravo")
-            {
-                x = playerX + playerW + 2;
-                y = playerY + (playerH / 2);
-            }
-            else if (rotation == "vlavo")
-            {
-                x = playerX - 3;
-                y = playerY + (playerH / 2);
-            }
-            else if (rotation == "hore")
-            {
-                x = playerX + (playerW/2);
-                y = playerY - 2;
-            }
-            else if (rotation == "dole")
-            {
-                x = playerX + (playerW/2);
-                y = playerY + playerH + 1;
             }
 
-            rot = rotation;
-
-            //urcovanie bulletu
-            switch (UPGRADE)
-            {
-            case 0:
-                tvar = "•";
-                dmg = 1;
-                break;
+    Weapon current_weapon = weapon_list[15];
             
-            default:
-                tvar = "•";
-                break;
-            }
-        }
+    player.ChangeWeapon(current_weapon.id_upgrade, current_weapon.fireRate, current_weapon.reloadTime, current_weapon.ammo, current_weapon.burst);
     
-    };
     typedef std::vector<Bullet> bullet_list_t;
     
-
     bullet_list_t bullet_list;
     
-    //---------ENEMY-------------
-    class Enemy { 
-    public:
-        int x = 20;
-        int y = 20;
         
-        int width = 5;
-        int height = 3;
-
-        bool alive = true;
-        int health = 5;
-    
-    };
     typedef std::vector<Enemy> enemy_list_t;
     Enemy enemy;
     // Create the vector.
     enemy_list_t enemy_list;
 
-
-
     //----------SPAWN----------------
-    for (int i ; i < Enemies ; i++)
+    for (int i = 0 ; i < Enemies ; i++)
     {
-        enemy_list.push_back(enemy);
-        enemy_list[i].x = random(5,200);
-        enemy_list[i].y = random(5,40);
+        int r = random(0,3);
+        if (r == 0)
+        {
+            enemy_list.push_back(enemy);
+            enemy_list[i].y = 1;
+            enemy_list[i].x = random(1,205);
+        }
+        else if (r == 1)
+        {
+            enemy_list.push_back(enemy);
+            enemy_list[i].x = 1;
+            enemy_list[i].y = random(1,45);
+
+        }
+        else if (r == 2)
+        {
+            enemy_list.push_back(enemy);
+            enemy_list[i].y = 45;
+            enemy_list[i].x = random(1,205);
+        }
+        else if (r == 3)
+        {
+            enemy_list.push_back(enemy);
+            enemy_list[i].y = random(1,45);
+            enemy_list[i].x = 205;
+        }
     }
+
 
     
     while (game)
     {
+
         Bullet bullet(player.x,player.y, player.upgrade , player.rotation , player.width , player.height);
     //-----------------dynamicka aktualizacia pre constructor----------
         player.fireCounter += 1;
@@ -142,6 +204,7 @@ int main() {
             }
         }
 
+        bullet.ChangeWeapon(current_weapon.dmg, current_weapon.speedX, current_weapon.speedY, current_weapon.tvar, current_weapon.pellets);
 
 
         if (GetKeyState('D') & 0x8000)
@@ -393,9 +456,9 @@ int main() {
 
 
         clear();
-        //farba(4);
-        cout << " Health: 100                  " << "X:" << player.x << "    Y:" << player.y << "     rotation: " << player.rotation <<"    Ammo:" <<player.ammo <<"/"<< player.maxAmmo <<"                    "<< enemy_list[0].health <<"        "<< random(5,15)<<endl;
-        //farba(2);
+
+        cout << " Health: 100                  " << "X:" << player.x << "    Y:" << player.y << "     rotation: " << player.rotation <<"    Ammo:" <<player.ammo <<"/"<< player.maxAmmo <<"                    "<< enemy_list[0].health <<"                    "<< current_weapon.name  <<endl;
+
         draw();
         if (bullet_list.size()>0)
         {
@@ -405,7 +468,6 @@ int main() {
 
 
     clear();
-    farba(0);
     return 0;
 }
 

@@ -13,6 +13,51 @@ string RiadkovyText= "";
 //bullety
 vector<int> BulletL;
 
+void farba(int );
+
+void clear();
+
+void draw();
+
+void pozadie();
+
+void playerDraw(int , int , int , int , string);
+
+int random(int a , int b);
+
+class Weapon
+{
+public:
+    int id_upgrade = 0;
+    string name = "";
+    int ammo = 0;
+    int reloadTime = 0;
+    int fireRate = 0;
+    int dmg = 0;
+    int speedX = 0;
+    int speedY = 0;
+    string tvar ="";
+    int pellets = 0;
+    int burst = 0;
+    Weapon(int a , string b, int c, int d, int e, int f, int g, string h, int i, int j);
+};
+
+Weapon::Weapon(int Id, string Name, int Ammo, int ReloadTime, int FireRate, int Dmg, int Speed, string Tvar, int Pellets, int Burst) {
+    id_upgrade = Id;
+    name = Name;
+    ammo = Ammo;
+    reloadTime = ReloadTime;
+    fireRate = FireRate;
+    dmg = Dmg;
+    speedX = Speed;
+    speedY = Speed /2;
+    tvar = Tvar;
+    pellets = Pellets;
+    burst= Burst;
+}
+
+
+
 
 
 void clear()
@@ -30,7 +75,7 @@ void draw()
         {
             RiadkovyText += screen[i][j];
         }
-    cout << RiadkovyText<< endl;
+    cout <<RiadkovyText<< endl;
     RiadkovyText = "";
     }
     
@@ -158,7 +203,6 @@ void farba(int farba)                             // farba popredia + farba poza
                                                         6 = Yellow      E = Light Yellow
                                                         7 = White       F = Bright White
  */
-
 int random(int a,int b)
 {
     random_device dev;
@@ -166,4 +210,5 @@ int random(int a,int b)
     uniform_int_distribution<mt19937::result_type> dist6(a,b); // distribution in range [1, 6]
     return dist6(rng);
 }
+
 
