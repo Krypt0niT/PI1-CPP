@@ -6,7 +6,7 @@ using namespace std;
 
 const int x = 211;
 const int y = 49;
-int Enemies = 3;
+int Enemies = 5;
 string screen[y][x];
 bool game = true;
 string RiadkovyText= "";

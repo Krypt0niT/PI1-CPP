@@ -395,24 +395,77 @@ int main() {
             
             if (enemy_list[enemy].alive)
             {
+
                 if (enemy_list[enemy].EnemySlowerTick >= enemy_list[enemy].EnemySlower)
                 {
+                    bool move = true;
                     if (player.y < enemy_list[enemy].y)
                     {  
                             enemy_list[enemy].y -= enemy_list[enemy].speedY;
                     }
                     if (player.y > enemy_list[enemy].y)
                     {  
+                        
                             enemy_list[enemy].y += enemy_list[enemy].speedY;
+                        
                     }
                     if (player.x > enemy_list[enemy].x)
                     {  
+                        move = true;
+                        for (int i = 0 ; i < enemy_list.size() ; i++)
+                        {
+                            
+                            if (enemy_list[i].alive)
+                            {
+                                if (enemy_list[enemy].x < enemy_list[i].x)
+                                {
+                                    if (enemy_list[enemy].x + enemy_list[enemy].width >= enemy_list[i].x)
+                                    {
+                                        if (enemy_list[i].y + enemy_list[i].height > enemy_list[enemy].y)
+                                        {
+                                            if (enemy_list[i].y < enemy_list[enemy].y + enemy_list[enemy].height)
+                                            {
+                                                move = false;
+                                            }
+                                        } 
+                                    }
+                                }
+                            }
+                        }
+                        if (move)
+                        {
                             enemy_list[enemy].x += enemy_list[enemy].speedX;
+                        }
                     }
                     if (player.x < enemy_list[enemy].x)
                     {  
+                        move = true;
+                        for (int i = 0 ; i < enemy_list.size() ; i++)
+                        {
+                            
+                            if (enemy_list[i].alive)
+                            {
+                                if (enemy_list[enemy].x > enemy_list[i].x)
+                                {
+                                    if (enemy_list[i].x + enemy_list[i].width >= enemy_list[enemy].x)
+                                    {
+                                        if (enemy_list[i].y + enemy_list[i].height > enemy_list[enemy].y)
+                                        {
+                                            if (enemy_list[i].y < enemy_list[enemy].y + enemy_list[enemy].height)
+                                            {
+                                                move = false;
+                                            }
+                                        } 
+                                    }
+                                }
+                            }
+                        }
+                        if (move)
+                        {
                             enemy_list[enemy].x -= enemy_list[enemy].speedX;
+                        }
                     }
+                    
 
                     enemy_list[enemy].EnemySlowerTick = 0;
                 }
