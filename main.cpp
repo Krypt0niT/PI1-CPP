@@ -115,6 +115,11 @@ public:
 
     bool alive = true;
     int health = 20;
+    int speedX = 2;
+    int speedY = 1;
+
+    int EnemySlower = 2;
+    int EnemySlowerTick = 0;
 
 };
 
@@ -381,6 +386,41 @@ int main() {
 
                     }
                 }
+            }
+        }
+        //-----------ENEMY MOVE----------------------
+
+        for (int enemy = 0 ; enemy < enemy_list.size() ; enemy ++)
+        {
+            
+            if (enemy_list[enemy].alive)
+            {
+                if (enemy_list[enemy].EnemySlowerTick >= enemy_list[enemy].EnemySlower)
+                {
+                    if (player.y < enemy_list[enemy].y)
+                    {  
+                            enemy_list[enemy].y -= enemy_list[enemy].speedY;
+                    }
+                    if (player.y > enemy_list[enemy].y)
+                    {  
+                            enemy_list[enemy].y += enemy_list[enemy].speedY;
+                    }
+                    if (player.x > enemy_list[enemy].x)
+                    {  
+                            enemy_list[enemy].x += enemy_list[enemy].speedX;
+                    }
+                    if (player.x < enemy_list[enemy].x)
+                    {  
+                            enemy_list[enemy].x -= enemy_list[enemy].speedX;
+                    }
+
+                    enemy_list[enemy].EnemySlowerTick = 0;
+                }
+                else
+                {
+                   enemy_list[enemy].EnemySlowerTick += 1; 
+                }
+
             }
         }
 

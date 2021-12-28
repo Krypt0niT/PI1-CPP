@@ -10,6 +10,7 @@ int Enemies = 3;
 string screen[y][x];
 bool game = true;
 string RiadkovyText= "";
+
 //bullety
 vector<int> BulletL;
 
