@@ -173,12 +173,14 @@ int main() {
             enemy_list.push_back(enemy);
             enemy_list[i].y = 1;
             enemy_list[i].x = random(1,205);
+            
         }
         else if (r == 1)
         {
             enemy_list.push_back(enemy);
             enemy_list[i].x = 1;
             enemy_list[i].y = random(1,45);
+            
 
         }
         else if (r == 2)
@@ -186,13 +188,16 @@ int main() {
             enemy_list.push_back(enemy);
             enemy_list[i].y = 45;
             enemy_list[i].x = random(1,205);
+            
         }
         else if (r == 3)
         {
             enemy_list.push_back(enemy);
             enemy_list[i].y = random(1,45);
             enemy_list[i].x = 205;
+            
         }
+        enemy_list[i].EnemySlower = random(1,3);
     }
 
 
@@ -388,6 +393,21 @@ int main() {
                 }
             }
         }
+        //--------KONTROLA ALIVE ENEMAKOV A KONIEC KOLA -------------
+        EnemiesAlive  = 0;
+        for (int i = 0 ; i < enemy_list.size() ; i++)
+        {
+            if (enemy_list[i].alive) {
+                EnemiesAlive += 1;
+            }
+        }
+
+
+
+
+
+
+
         //-----------ENEMY MOVE----------------------
 
         for (int enemy = 0 ; enemy < enemy_list.size() ; enemy ++)
@@ -401,12 +421,61 @@ int main() {
                     bool move = true;
                     if (player.y < enemy_list[enemy].y)
                     {  
+                        move = true;
+                        for (int i = 0 ; i < enemy_list.size() ; i++)
+                        {
+                            
+                            if (enemy_list[i].alive)
+                            {
+                                if (enemy_list[enemy].y > enemy_list[i].y)
+                                {
+                                    if (enemy_list[i].y + enemy_list[i].height >= enemy_list[enemy].y)
+                                    {
+                                        if (enemy_list[i].x + enemy_list[i].width > enemy_list[enemy].x)
+                                        {
+                                            if (enemy_list[i].x < enemy_list[enemy].x + enemy_list[enemy].width)
+                                            {
+                                                move = false;
+                                            }
+                                        } 
+                                    }
+                                }
+                            }
+                        }
+                        if (move)
+                        {
                             enemy_list[enemy].y -= enemy_list[enemy].speedY;
+                        }
+                    
                     }
                     if (player.y > enemy_list[enemy].y)
                     {  
                         
+                        move = true;
+                        for (int i = 0 ; i < enemy_list.size() ; i++)
+                        {
+                            
+                            if (enemy_list[i].alive)
+                            {
+                                if (enemy_list[enemy].y < enemy_list[i].y)
+                                {
+                                    if (enemy_list[enemy].y + enemy_list[enemy].height >= enemy_list[i].y)
+                                    {
+                                        if (enemy_list[i].x + enemy_list[i].width > enemy_list[enemy].x)
+                                        {
+                                            if (enemy_list[i].x < enemy_list[enemy].x + enemy_list[enemy].width)
+                                            {
+                                                move = false;
+                                            }
+                                        } 
+                                    }
+                                }
+                            }
+                        }
+                        if (move)
+                        {
                             enemy_list[enemy].y += enemy_list[enemy].speedY;
+                        }
                         
                     }
                     if (player.x > enemy_list[enemy].x)
@@ -614,7 +683,7 @@ int main() {
 
 
         clear();
-        cout << " Health: 100                  " << "X:" << player.x << "    Y:" << player.y << "     rotation: " << player.rotation <<"    Ammo:" <<player.ammo <<"/"<< player.maxAmmo <<"                    "<< enemy_list[0].health <<"                    "<< current_weapon.name <<"                  "<< kills <<"/"<< upgrade  <<endl;
+        cout << " Health: 100                  " << "X:" << player.x << "    Y:" << player.y << "     rotation: " << player.rotation <<"    Ammo:" <<player.ammo <<"/"<< player.maxAmmo <<"                    "<< enemy_list[0].health <<"                    "<< current_weapon.name <<"                  "<< kills <<"/"<< upgrade  <<"        Enemies Alive: "<< EnemiesAlive<<endl;
         draw();
         if (bullet_list.size()>0)
         {
