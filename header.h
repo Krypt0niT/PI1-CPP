@@ -8,7 +8,7 @@ const int x = 211;
 const int y = 49;
 int Enemies = 0;
 int EnemiesAlive = Enemies;
-int wave = 9;
+int wave = 0;
 string screen[y][x];
 bool game = true;
 string RiadkovyText= "";
