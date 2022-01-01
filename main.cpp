@@ -107,8 +107,8 @@ public:
 //---------ENEMY-------------
 class Enemy {
 public:
-    int x = 20;
-    int y = 20;
+    int x;
+    int y;
 
     int width = 5;
     int height = 3;
@@ -164,42 +164,7 @@ int main() {
     // Create the vector.
     enemy_list_t enemy_list;
 
-    //----------SPAWN----------------
-    for (int i = 0 ; i < Enemies ; i++)
-    {
-        int r = random(0,3);
-        if (r == 0)
-        {
-            enemy_list.push_back(enemy);
-            enemy_list[i].y = 1;
-            enemy_list[i].x = random(1,205);
-            
-        }
-        else if (r == 1)
-        {
-            enemy_list.push_back(enemy);
-            enemy_list[i].x = 1;
-            enemy_list[i].y = random(1,45);
-            
-
-        }
-        else if (r == 2)
-        {
-            enemy_list.push_back(enemy);
-            enemy_list[i].y = 45;
-            enemy_list[i].x = random(1,205);
-            
-        }
-        else if (r == 3)
-        {
-            enemy_list.push_back(enemy);
-            enemy_list[i].y = random(1,45);
-            enemy_list[i].x = 205;
-            
-        }
-        enemy_list[i].EnemySlower = random(1,3);
-    }
-
+    
 
     
     while (game)
@@ -545,6 +510,91 @@ int main() {
 
             }
         }
+        if (EnemiesAlive == 0)
+        {
+            enemy_list.clear();
+            wave += 1;
+
+            switch (wave)
+            {
+            case 1:
+                Enemies = 2;
+                break;
+            case 2:
+                Enemies = 3;
+                break;
+            case 3:
+                Enemies = 5;
+                break;
+            case 4:
+                Enemies = 7;
+                break;
+            case 5:
+                Enemies = 10;
+                break;
+            case 6:
+                Enemies = 12;
+                break;
+            case 7:
+                Enemies = 15;
+                break;
+            case 8:
+                Enemies = 17;
+                break;
+            case 9:
+                Enemies = 20;
+                break;
+            case 10:
+                Enemies = 25;
+                break;
+                            
+            default:
+                if (wave > 10) {
+                Enemies = 25 + (wave - 10);
+                }
+                break;
+
+
+
+            
+            }
+            //----------SPAWN----------------
+            for (int i = 0 ; i < Enemies ; i++)
+            {
+                int r = random(0,3);
+                if (r == 0)
+                {
+                    enemy_list.push_back(enemy);
+                    enemy_list[i].y = 1;
+                    enemy_list[i].x = random(1,205);
+                    
+                }
+                else if (r == 1)
+                {
+                    enemy_list.push_back(enemy);
+                    enemy_list[i].x = 1;
+                    enemy_list[i].y = random(1,45);
+                    
+
+                }
+                else if (r == 2)
+                {
+                    enemy_list.push_back(enemy);
+                    enemy_list[i].y = 45;
+                    enemy_list[i].x = random(1,205);
+                    
+                }
+                else if (r == 3)
+                {
+                    enemy_list.push_back(enemy);
+                    enemy_list[i].y = random(1,45);
+                    enemy_list[i].x = 205;
+                    
+                }
+                enemy_list[i].EnemySlower = random(1,3);
+            }
+
+        }
 
         
         
@@ -683,7 +733,7 @@ int main() {
 
 
         clear();
-        cout << " Health: 100                  " << "X:" << player.x << "    Y:" << player.y << "     rotation: " << player.rotation <<"    Ammo:" <<player.ammo <<"/"<< player.maxAmmo <<"                    "<< enemy_list[0].health <<"                    "<< current_weapon.name <<"                  "<< kills <<"/"<< upgrade  <<"        Enemies Alive: "<< EnemiesAlive<<endl;
+        cout << " Health: 100                  " << "X:" << player.x << "    Y:" << player.y << "     rotation: " << player.rotation <<"    Ammo:" <<player.ammo <<"/"<< player.maxAmmo <<"                    "<< enemy_list[0].health <<"                    "<< current_weapon.name <<"                  "<< kills <<"/"<< upgrade  <<"        Enemies Alive: "<< EnemiesAlive <<"                   Wave: "<< wave <<endl;
         draw();
         if (bullet_list.size()>0)
         {
