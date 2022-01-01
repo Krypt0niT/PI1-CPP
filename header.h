@@ -164,7 +164,7 @@ void playerDraw(int x, int y, int W, int H, string rotation)
                 {
                     if (j == 1 || j == W - 2)
                     {
-                        screen[y+i][x+j] = "O";
+                        screen[y+i][x+j] = "○";
                         continue;
                     }
                 }
