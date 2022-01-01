@@ -12,6 +12,7 @@ public:
     int y = 25;
     int width = 5;
     int height = 3;
+    int health = 100;
 
     int speedY = 1;
     int speedX = 2;
@@ -733,7 +734,8 @@ int main() {
 
 
         clear();
-        cout << " Health: 100                  " << "X:" << player.x << "    Y:" << player.y << "     rotation: " << player.rotation <<"    Ammo:" <<player.ammo <<"/"<< player.maxAmmo <<"                    "<< enemy_list[0].health <<"                    "<< current_weapon.name <<"                  "<< kills <<"/"<< upgrade  <<"        Enemies Alive: "<< EnemiesAlive <<"                   Wave: "<< wave <<endl;
+        printf("Health: %i\t x:%i,y=%i\t ammo:%i/%i\t kills:%i/%i\t wave:%i\n",player.health,player.x,player.y,player.ammo,player.maxAmmo,kills,upgrade,wave);
+        
         draw();
         if (bullet_list.size()>0)
         {
