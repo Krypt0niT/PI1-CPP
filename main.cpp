@@ -116,6 +116,7 @@ public:
 
     bool alive = true;
     int health = 20;
+    int dmg;
     int speedX = 2;
     int speedY = 1;
 
@@ -593,8 +594,31 @@ int main() {
                     
                 }
                 enemy_list[i].EnemySlower = random(1,3);
+                enemy_list[i].dmg = random(1,3);
             }
 
+        }
+
+        //-------------ENEMY BITE -------------------------
+        for (int enemy = 0 ; enemy < enemy_list.size() ; enemy++)
+        {
+            if (enemy_list[enemy].alive)
+            {
+                if (enemy_list[enemy].x + enemy_list[enemy].width >= player.x )
+                {
+                    if (enemy_list[enemy].x <= player.x + player.width)
+                    {
+                        if (enemy_list[enemy].y + enemy_list[enemy].height >= player.y )
+                        {
+                            if (enemy_list[enemy].y <= player.y + player.height)
+                            {
+
+                                player.health -= enemy_list[enemy].dmg;  
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         

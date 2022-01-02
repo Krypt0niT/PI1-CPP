@@ -1,1 +1,1 @@
-ro
+enemy_list.size()
