@@ -824,7 +824,7 @@ int main() {
         Upgrade = upgrade + upgrade * multiplier;
         clear();
         // Urobte to tak aby to išlo, neviem prečo ste to menili.
-        printf("Health: %i\t x:%i,y=%i\t current_weapon:%s\t ammo:%i/%i\t kills:%i/%i\t wave:%i\n Weapon Upgrade 1:%s\t Weapon Upgrade 2 :%s\n", player.health, player.x, player.y, player.ammo, current_weapon.name, player.maxAmmo, kills, Upgrade, wave, upgrade_name1, upgrade_name2);
+        //printf("Health: %i\t x:%i,y=%i\t current_weapon:%s\t ammo:%i/%i\t kills:%i/%i\t wave:%i\n Weapon Upgrade 1:%s\t Weapon Upgrade 2 :%s\n", player.health, player.x, player.y, player.ammo, current_weapon.name, player.maxAmmo, kills, Upgrade, wave, upgrade_name1, upgrade_name2);
         cout << " player.health                  " << "X:" << player.x << "    Y:" << player.y << "     rotation: " << player.rotation <<"    Ammo:" <<player.ammo <<"/"<< player.maxAmmo <<"               "<< enemy_list[0].health <<"  Current weapon: "<< current_weapon.name <<"   Weapon Upgrade 1: "<< upgrade_name1 <<"   Weapon Upgrade 2: "<< upgrade_name2<<"   " << kills <<"/"<< upgrade + upgrade * multiplier <<endl;
         draw();
         if (bullet_list.size()>0)
