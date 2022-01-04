@@ -127,7 +127,7 @@ public:
 
 int main() {
 
-    int kills = 0, upgrade = 10;
+    int kills = 0, upgrade = 10, Upgrade;
 
     float multiplier = 0;
 
@@ -137,15 +137,15 @@ int main() {
 
     weapon_list_t weapon_list;
 
-    string nazov[22] = { "pistol","revolver","pistol+","Double barrel shotgun","Hunting rifle","Atomatic pistol","Pump action shotgun", "Bolt action rifle","Semiautomatic rifle","smg", "Semi automatic shotgun", "Pump action shotgun +", "DMR", "Battle rifle", "Burst rifle", "Smg +", "Automatic shotgun", "Pump action shotgun ++", "Sniper rifle", "Automatic rifle", "burst rifle+", "Smg++" };
+    string nazov[22] = { "Pistol","Revolver","Pistol+","Double barrel shotgun","Hunting rifle","Atomatic pistol","Pump action shotgun", "Bolt action rifle","Semi-automatic rifle","smg", "Semi-automatic shotgun", "Pump action shotgun +", "DMR", "Battle rifle", "Burst rifle", "Smg +", "Automatic shotgun", "Pump action shotgun ++", "Sniper rifle", "Automatic rifle", "Burst rifle+", "Smg++" };
     int ammo[22] = { 7, 6, 17, 2, 5, 20, 5, 5, 20, 30, 5, 7, 10, 20, 30, 30, 20, 8, 10, 30, 30, 50 };
     int reload[22] = { 15, 20, 10, 20, 15, 10, 20, 15, 20, 10 , 20, 15, 20, 20, 20, 10, 30, 14, 30, 18, 15, 10 };
-    int fireRate[22] = { 7, 10, 4, 15, 16, 2, 13, 16, 7, 3, 7, 11, 10, 5, 15, 2, 4, 8, 15, 3, 20, 1 };
+    int fireRate[22] = { 7, 10, 4, 15, 16, 2, 13, 16, 7, 3, 7, 11, 10, 5, 10, 2, 4, 8, 15, 3, 10, 1 };
     int dmg[22] = { 5, 10, 5, 7, 25, 5, 10, 40, 25, 7, 10, 15, 50, 35, 25, 10, 15, 20, 125, 40, 30, 15};
     int speed[22] = { 4, 4, 4, 4, 8, 6, 4, 8, 8, 6, 4, 4, 10, 8, 8, 6, 4, 4, 10, 8, 8, 6};
     string shape[22] = {"·","•", "·", "∴", "•", "·", "∴", "·", "·", "·", "∴", "∴", "●", "•", "•", "·", "∴", "∴", "●", "•", "•", "·" };
     int pellets[22] = { 1, 1, 1, 3, 1, 1, 1, 1, 1, 3, 3, 1, 1, 1, 1, 3, 3, 1, 1, 1, 1, 1 };
-    int burst[22] = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 3, 1 };
+    int burst[22] = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 1, 1, 1, 1, 1, 3, 1 };
 
     for (int i = 0; i < 22; i++) {
         weapon_list.push_back(Weapon(i, nazov[i], ammo[i], reload[i], fireRate[i], dmg[i], speed[i], shape[i], pellets[i], burst[i]));
@@ -154,6 +154,8 @@ int main() {
 
     Weapon current_weapon = weapon_list[0];
             
+    string upgrade_name1 = "", upgrade_name2 = "";
+
     player.ChangeWeapon(current_weapon.id_upgrade, current_weapon.fireRate, current_weapon.reloadTime, current_weapon.ammo, current_weapon.burst);
     
     typedef std::vector<Bullet> bullet_list_t;
@@ -237,6 +239,16 @@ int main() {
         if (GetKeyState(32) & 0x8000) // t.j. medzerník
 
         {
+            //strielanie pre burst rifle
+            if (player.burst == 3 && player.ammo % 3 != 0) {
+                player.fireRate = 1;
+            }
+            else if (player.burst == 3 && player.ammo % 3 == 0) {
+                player.fireRate = fireRate[current_weapon.id_upgrade];
+            }
+
+
+
             //prida bullet
             if(player.ammo > 0)
             {
@@ -247,6 +259,7 @@ int main() {
                 player.ammo -= 1;
                 }
             }
+
         }
 
         if (GetKeyState(27) & 0x8000) // esc
@@ -262,7 +275,7 @@ int main() {
                 game = true;
         }
         if (GetKeyState(49) & 0x8000) {
-            if (kills == upgrade + upgrade * multiplier)
+            if (kills >= upgrade + upgrade * multiplier)
             {
                 if (current_weapon.id_upgrade == 0)
                 {
@@ -288,14 +301,17 @@ int main() {
                 {
                     current_weapon = weapon_list[current_weapon.id_upgrade + 6];
                 }
-                multiplier += 0.5;
+                else if (current_weapon.id_upgrade == 16 || current_weapon.id_upgrade == 17 || current_weapon.id_upgrade == 18 || current_weapon.id_upgrade == 19 || current_weapon.id_upgrade == 20 || current_weapon.id_upgrade == 21) {
+                    dmg[current_weapon.id_upgrade] += multiplier;
+                }
+                multiplier = multiplier + multiplier*0.5;
                 kills = 0;
             }
             player.ChangeWeapon(current_weapon.id_upgrade, current_weapon.fireRate, current_weapon.reloadTime, current_weapon.ammo, current_weapon.burst);
 
         }
         if (GetKeyState(50) & 0x8000) {
-            if (kills == upgrade + upgrade * multiplier) {
+            if (kills >= upgrade + upgrade * multiplier) {
                 if (current_weapon.id_upgrade == 0)
                 {
                     current_weapon = weapon_list[current_weapon.id_upgrade + 2];        
@@ -315,6 +331,9 @@ int main() {
                 else if (current_weapon.id_upgrade == 7 || current_weapon.id_upgrade == 8)
                 {
                     current_weapon = weapon_list[current_weapon.id_upgrade + 6];
+                }
+                else if (current_weapon.id_upgrade == 16 || current_weapon.id_upgrade == 17 || current_weapon.id_upgrade == 18 || current_weapon.id_upgrade == 19 || current_weapon.id_upgrade == 20 || current_weapon.id_upgrade == 21) {
+                    dmg[current_weapon.id_upgrade] += multiplier;
                 }
                 multiplier += 0.5;
                 kills = 0;
@@ -625,7 +644,52 @@ int main() {
         
 
 
-
+        //mozne upgrady
+        if (current_weapon.id_upgrade == 0)
+        {
+            upgrade_name1 = weapon_list[current_weapon.id_upgrade + 1].name;
+            upgrade_name2 = weapon_list[current_weapon.id_upgrade + 2].name;
+        }
+        else if (current_weapon.id_upgrade == 1 || current_weapon.id_upgrade == 2)
+        {
+            upgrade_name1 = weapon_list[current_weapon.id_upgrade + 2].name;
+            upgrade_name2 = weapon_list[current_weapon.id_upgrade + 3].name;
+        }
+        else if (current_weapon.id_upgrade == 3)
+        {
+            upgrade_name1 = weapon_list[current_weapon.id_upgrade + 3].name;
+            upgrade_name2 = "";
+        }
+        else if(current_weapon.id_upgrade == 4)
+        {
+            upgrade_name1 = weapon_list[current_weapon.id_upgrade + 3].name;
+            upgrade_name2 = weapon_list[current_weapon.id_upgrade + 4].name;
+        }
+        else if (current_weapon.id_upgrade == 5)
+        {
+            upgrade_name1 = weapon_list[current_weapon.id_upgrade + 3].name;
+            upgrade_name2 = "";
+        }
+        else if (current_weapon.id_upgrade == 6 )
+        {
+            upgrade_name1 = weapon_list[current_weapon.id_upgrade + 4].name;
+            upgrade_name2 = weapon_list[current_weapon.id_upgrade + 5].name;
+        }
+        else if (current_weapon.id_upgrade == 7 || current_weapon.id_upgrade == 8)
+        {
+            upgrade_name1 = weapon_list[current_weapon.id_upgrade + 5].name;
+            upgrade_name2 = weapon_list[current_weapon.id_upgrade + 6].name;
+        }
+        else if (current_weapon.id_upgrade == 9 || current_weapon.id_upgrade == 10 || current_weapon.id_upgrade == 11 || current_weapon.id_upgrade == 12 || current_weapon.id_upgrade == 13 || current_weapon.id_upgrade == 14 || current_weapon.id_upgrade == 15)
+        {
+            upgrade_name1 = weapon_list[current_weapon.id_upgrade + 6].name;
+            upgrade_name2 = "";
+        }
+        else if (current_weapon.id_upgrade == 16 || current_weapon.id_upgrade == 17 || current_weapon.id_upgrade == 18 || current_weapon.id_upgrade == 19 || current_weapon.id_upgrade == 20 || current_weapon.id_upgrade == 21)
+        {
+            upgrade_name1 = "+DMG";
+            upgrade_name2 = "+AMMO";
+        }
 
 
 
@@ -757,9 +821,11 @@ int main() {
 
 
 
+        Upgrade = upgrade + upgrade * multiplier;
         clear();
-        printf("Health: %i\t x:%i,y=%i\t ammo:%i/%i\t kills:%i/%i\t wave:%i\n",player.health,player.x,player.y,player.ammo,player.maxAmmo,kills,upgrade,wave);
-        
+        // Urobte to tak aby to išlo, neviem prečo ste to menili.
+        printf("Health: %i\t x:%i,y=%i\t current_weapon:%s\t ammo:%i/%i\t kills:%i/%i\t wave:%i\n Weapon Upgrade 1:%s\t Weapon Upgrade 2 :%s\n", player.health, player.x, player.y, player.ammo, current_weapon.name, player.maxAmmo, kills, Upgrade, wave, upgrade_name1, upgrade_name2);
+        cout << " player.health                  " << "X:" << player.x << "    Y:" << player.y << "     rotation: " << player.rotation <<"    Ammo:" <<player.ammo <<"/"<< player.maxAmmo <<"               "<< enemy_list[0].health <<"  Current weapon: "<< current_weapon.name <<"   Weapon Upgrade 1: "<< upgrade_name1 <<"   Weapon Upgrade 2: "<< upgrade_name2<<"   " << kills <<"/"<< upgrade + upgrade * multiplier <<endl;
         draw();
         if (bullet_list.size()>0)
         {
