@@ -1,5 +1,4 @@
-﻿
-#include <iostream>
+﻿#include <iostream>
 #include <string>
 #include <vector>
 #include <random>
@@ -7,10 +6,13 @@ using namespace std;
 
 const int x = 211;
 const int y = 49;
-int Enemies = 3;
+int Enemies = 0;
+int EnemiesAlive = Enemies;
+int wave = 0;
 string screen[y][x];
 bool game = true;
 string RiadkovyText= "";
+
 //bullety
 vector<int> BulletL;
 
@@ -76,7 +78,7 @@ void draw()
         {
             RiadkovyText += screen[i][j];
         }
-        std::cout << RiadkovyText << endl;
+        cout << RiadkovyText << endl;
         RiadkovyText = "";
     }
 
@@ -166,8 +168,8 @@ void playerDraw(int x, int y, int W, int H, string rotation)
                         continue;
                     }
                 }
-                screen[y+i][x+j] = "\xDB";
          
+                screen[y+i][x+j] = "\xDB";
         }
     }
     if (rotation == "vpravo")
@@ -211,5 +213,4 @@ int random(int a,int b)
     uniform_int_distribution<mt19937::result_type> dist6(a,b); // distribution in range [1, 6]
     return dist6(rng);
 }
-
 

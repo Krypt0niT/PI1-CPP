@@ -12,6 +12,7 @@ public:
     int y = 25;
     int width = 5;
     int height = 3;
+    int health = 100;
 
     int speedY = 1;
     int speedX = 2;
@@ -107,14 +108,20 @@ public:
 //---------ENEMY-------------
 class Enemy {
 public:
-    int x = 20;
-    int y = 20;
+    int x;
+    int y;
 
     int width = 5;
     int height = 3;
 
     bool alive = true;
     int health = 20;
+    int dmg;
+    int speedX = 2;
+    int speedY = 1;
+
+    int EnemySlower = 2;
+    int EnemySlowerTick = 0;
 
 };
 
@@ -130,15 +137,15 @@ int main() {
 
     weapon_list_t weapon_list;
 
-    string nazov[22] = { "pistol","revolver","pistol+","Double barrel shotgun","Hunting rifle","Atomatic pistol","Pump action shotgun", "Bolt action rifle","Semiautomatic rifle","smg", "Semi automatic shotgun", "Pump action shotgun +", "DMR", "Battle rifle", "Burst rifle", "Smg +", "Automatic shotgun", "Pump action shotgun ++", "Sniper rifle", "Automatic rifle", "burst rifle+", "Smg++" };
+    string nazov[22] = { "Pistol","Revolver","Pistol+","Double barrel shotgun","Hunting rifle","Atomatic pistol","Pump action shotgun", "Bolt action rifle","Semi-automatic rifle","smg", "Semi-automatic shotgun", "Pump action shotgun +", "DMR", "Battle rifle", "Burst rifle", "Smg +", "Automatic shotgun", "Pump action shotgun ++", "Sniper rifle", "Automatic rifle", "Burst rifle+", "Smg++" };
     int ammo[22] = { 7, 6, 17, 2, 5, 20, 5, 5, 20, 30, 5, 7, 10, 20, 30, 30, 20, 8, 10, 30, 30, 50 };
     int reload[22] = { 15, 20, 10, 20, 15, 10, 20, 15, 20, 10 , 20, 15, 20, 20, 20, 10, 30, 14, 30, 18, 15, 10 };
-    int fireRate[22] = { 7, 10, 4, 15, 16, 2, 13, 16, 7, 3, 7, 11, 10, 5, 15, 2, 4, 8, 15, 3, 20, 1 };
+    int fireRate[22] = { 7, 10, 4, 15, 16, 2, 13, 16, 7, 3, 7, 11, 10, 5, 10, 2, 4, 8, 15, 3, 10, 1 };
     int dmg[22] = { 5, 10, 5, 7, 25, 5, 10, 40, 25, 7, 10, 15, 50, 35, 25, 10, 15, 20, 125, 40, 30, 15};
     int speed[22] = { 4, 4, 4, 4, 8, 6, 4, 8, 8, 6, 4, 4, 10, 8, 8, 6, 4, 4, 10, 8, 8, 6};
     string shape[22] = {".",".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", "." };
     int pellets[22] = { 1, 1, 1, 3, 1, 1, 1, 1, 1, 3, 3, 1, 1, 1, 1, 3, 3, 1, 1, 1, 1, 1 };
-    int burst[22] = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 3, 1 };
+    int burst[22] = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 1, 1, 1, 1, 1, 3, 1 };
 
     for (int i = 0; i < 22; i++) {
         weapon_list.push_back(Weapon(i, nazov[i], ammo[i], reload[i], fireRate[i], dmg[i], speed[i], shape[i], pellets[i], burst[i]));
@@ -146,6 +153,8 @@ int main() {
     }
 
     Weapon current_weapon = weapon_list[0];
+
+    string upgrade_name1 = "", upgrade_name2 = "";
 
     player.ChangeWeapon(current_weapon.id_upgrade, current_weapon.fireRate, current_weapon.reloadTime, current_weapon.ammo, current_weapon.burst);
 
@@ -262,16 +271,27 @@ int main() {
         if (GetKeyState(32) & 0x8000) // t.j. medzerník
 
         {
+            if (player.burst == 3 && player.ammo % 3 != 0) {
+                player.fireRate = 1;
+            }
+
+
+
             //prida bullet
             if(player.ammo > 0)
-            {
-                if(player.fireCounter >= player.fireRate)
+            {   
+                if (player.fireCounter >= player.fireRate)
                 {
-                bullet_list.push_back(bullet);
-                player.fireCounter = 0;
-                player.ammo -= 1;
+                    bullet_list.push_back(bullet);
+                    player.fireCounter = 0;
+                    player.ammo -= 1;
                 }
             }
+
+            if(player.burst == 3 && player.ammo % 3 == 0) {
+                player.fireRate = fireRate[current_weapon.id_upgrade];
+            }
+
         }
 
         if (GetKeyState(27) & 0x8000) // esc
@@ -287,7 +307,7 @@ int main() {
                 game = true;
         }
         if (GetKeyState(49) & 0x8000) {
-            if (kills == upgrade + upgrade * multiplier)
+            if (kills >= upgrade + upgrade * multiplier)
             {
                 if (current_weapon.id_upgrade == 0)
                 {
@@ -313,17 +333,20 @@ int main() {
                 {
                     current_weapon = weapon_list[current_weapon.id_upgrade + 6];
                 }
-                multiplier += 0.5;
+                else if (current_weapon.id_upgrade == 16 || current_weapon.id_upgrade == 17 || current_weapon.id_upgrade == 18 || current_weapon.id_upgrade == 19 || current_weapon.id_upgrade == 20 || current_weapon.id_upgrade == 21) {
+                    dmg[current_weapon.id_upgrade] += multiplier;
+                }
+                multiplier = multiplier + multiplier*0.5;
                 kills = 0;
             }
             player.ChangeWeapon(current_weapon.id_upgrade, current_weapon.fireRate, current_weapon.reloadTime, current_weapon.ammo, current_weapon.burst);
 
         }
         if (GetKeyState(50) & 0x8000) {
-            if (kills == upgrade + upgrade * multiplier) {
+            if (kills >= upgrade + upgrade * multiplier) {
                 if (current_weapon.id_upgrade == 0)
                 {
-                    current_weapon = weapon_list[current_weapon.id_upgrade + 2];        
+                    current_weapon = weapon_list[current_weapon.id_upgrade + 2];
                 }
                 else if (current_weapon.id_upgrade == 1 || current_weapon.id_upgrade == 2)
                 {
@@ -340,6 +363,9 @@ int main() {
                 else if (current_weapon.id_upgrade == 7 || current_weapon.id_upgrade == 8)
                 {
                     current_weapon = weapon_list[current_weapon.id_upgrade + 6];
+                }
+                else if (current_weapon.id_upgrade == 16 || current_weapon.id_upgrade == 17 || current_weapon.id_upgrade == 18 || current_weapon.id_upgrade == 19 || current_weapon.id_upgrade == 20 || current_weapon.id_upgrade == 21) {
+                    dmg[current_weapon.id_upgrade] += multiplier;
                 }
                 multiplier += 0.5;
                 kills = 0;
@@ -385,12 +411,317 @@ int main() {
                 }
             }
         }
+        //--------KONTROLA ALIVE ENEMAKOV A KONIEC KOLA -------------
+        EnemiesAlive  = 0;
+        for (int i = 0 ; i < enemy_list.size() ; i++)
+        {
+            if (enemy_list[i].alive) {
+                EnemiesAlive += 1;
+            }
+        }
+
+
+
+
+
+
+
+        //-----------ENEMY MOVE----------------------
+
+        for (int enemy = 0 ; enemy < enemy_list.size() ; enemy ++)
+        {
+            
+            if (enemy_list[enemy].alive)
+            {
+
+                if (enemy_list[enemy].EnemySlowerTick >= enemy_list[enemy].EnemySlower)
+                {
+                    bool move = true;
+                    if (player.y < enemy_list[enemy].y)
+                    {  
+                        move = true;
+                        for (int i = 0 ; i < enemy_list.size() ; i++)
+                        {
+                            
+                            if (enemy_list[i].alive)
+                            {
+                                if (enemy_list[enemy].y > enemy_list[i].y)
+                                {
+                                    if (enemy_list[i].y + enemy_list[i].height >= enemy_list[enemy].y)
+                                    {
+                                        if (enemy_list[i].x + enemy_list[i].width > enemy_list[enemy].x)
+                                        {
+                                            if (enemy_list[i].x < enemy_list[enemy].x + enemy_list[enemy].width)
+                                            {
+                                                move = false;
+                                            }
+                                        } 
+                                    }
+                                }
+                            }
+                        }
+                        if (move)
+                        {
+                            enemy_list[enemy].y -= enemy_list[enemy].speedY;
+                        }
+                    
+                    }
+                    if (player.y > enemy_list[enemy].y)
+                    {  
+                        
+                        move = true;
+                        for (int i = 0 ; i < enemy_list.size() ; i++)
+                        {
+                            
+                            if (enemy_list[i].alive)
+                            {
+                                if (enemy_list[enemy].y < enemy_list[i].y)
+                                {
+                                    if (enemy_list[enemy].y + enemy_list[enemy].height >= enemy_list[i].y)
+                                    {
+                                        if (enemy_list[i].x + enemy_list[i].width > enemy_list[enemy].x)
+                                        {
+                                            if (enemy_list[i].x < enemy_list[enemy].x + enemy_list[enemy].width)
+                                            {
+                                                move = false;
+                                            }
+                                        } 
+                                    }
+                                }
+                            }
+                        }
+                        if (move)
+                        {
+                            enemy_list[enemy].y += enemy_list[enemy].speedY;
+                        }
+                        
+                    }
+                    if (player.x > enemy_list[enemy].x)
+                    {  
+                        move = true;
+                        for (int i = 0 ; i < enemy_list.size() ; i++)
+                        {
+                            
+                            if (enemy_list[i].alive)
+                            {
+                                if (enemy_list[enemy].x < enemy_list[i].x)
+                                {
+                                    if (enemy_list[enemy].x + enemy_list[enemy].width >= enemy_list[i].x)
+                                    {
+                                        if (enemy_list[i].y + enemy_list[i].height > enemy_list[enemy].y)
+                                        {
+                                            if (enemy_list[i].y < enemy_list[enemy].y + enemy_list[enemy].height)
+                                            {
+                                                move = false;
+                                            }
+                                        } 
+                                    }
+                                }
+                            }
+                        }
+                        if (move)
+                        {
+                            enemy_list[enemy].x += enemy_list[enemy].speedX;
+                        }
+                    }
+                    if (player.x < enemy_list[enemy].x)
+                    {  
+                        move = true;
+                        for (int i = 0 ; i < enemy_list.size() ; i++)
+                        {
+                            
+                            if (enemy_list[i].alive)
+                            {
+                                if (enemy_list[enemy].x > enemy_list[i].x)
+                                {
+                                    if (enemy_list[i].x + enemy_list[i].width >= enemy_list[enemy].x)
+                                    {
+                                        if (enemy_list[i].y + enemy_list[i].height > enemy_list[enemy].y)
+                                        {
+                                            if (enemy_list[i].y < enemy_list[enemy].y + enemy_list[enemy].height)
+                                            {
+                                                move = false;
+                                            }
+                                        } 
+                                    }
+                                }
+                            }
+                        }
+                        if (move)
+                        {
+                            enemy_list[enemy].x -= enemy_list[enemy].speedX;
+                        }
+                    }
+                    
+
+                    enemy_list[enemy].EnemySlowerTick = 0;
+                }
+                else
+                {
+                   enemy_list[enemy].EnemySlowerTick += 1; 
+                }
+
+            }
+        }
+        if (EnemiesAlive == 0)
+        {
+            enemy_list.clear();
+            wave += 1;
+
+            switch (wave)
+            {
+            case 1:
+                Enemies = 2;
+                break;
+            case 2:
+                Enemies = 3;
+                break;
+            case 3:
+                Enemies = 5;
+                break;
+            case 4:
+                Enemies = 7;
+                break;
+            case 5:
+                Enemies = 10;
+                break;
+            case 6:
+                Enemies = 12;
+                break;
+            case 7:
+                Enemies = 15;
+                break;
+            case 8:
+                Enemies = 17;
+                break;
+            case 9:
+                Enemies = 20;
+                break;
+            case 10:
+                Enemies = 25;
+                break;
+                            
+            default:
+                if (wave > 10) {
+                Enemies = 25 + (wave - 10);
+                }
+                break;
+
+
+
+            
+            }
+            //----------SPAWN----------------
+            for (int i = 0 ; i < Enemies ; i++)
+            {
+                int r = random(0,3);
+                if (r == 0)
+                {
+                    enemy_list.push_back(enemy);
+                    enemy_list[i].y = 1;
+                    enemy_list[i].x = random(1,205);
+                    
+                }
+                else if (r == 1)
+                {
+                    enemy_list.push_back(enemy);
+                    enemy_list[i].x = 1;
+                    enemy_list[i].y = random(1,45);
+                    
+
+                }
+                else if (r == 2)
+                {
+                    enemy_list.push_back(enemy);
+                    enemy_list[i].y = 45;
+                    enemy_list[i].x = random(1,205);
+                    
+                }
+                else if (r == 3)
+                {
+                    enemy_list.push_back(enemy);
+                    enemy_list[i].y = random(1,45);
+                    enemy_list[i].x = 205;
+                    
+                }
+                enemy_list[i].EnemySlower = random(1,3);
+                enemy_list[i].dmg = random(1,3);
+            }
+
+        }
+
+        //-------------ENEMY BITE -------------------------
+        for (int enemy = 0 ; enemy < enemy_list.size() ; enemy++)
+        {
+            if (enemy_list[enemy].alive)
+            {
+                if (enemy_list[enemy].x + enemy_list[enemy].width >= player.x )
+                {
+                    if (enemy_list[enemy].x <= player.x + player.width)
+                    {
+                        if (enemy_list[enemy].y + enemy_list[enemy].height >= player.y )
+                        {
+                            if (enemy_list[enemy].y <= player.y + player.height)
+                            {
+
+                                player.health -= enemy_list[enemy].dmg;  
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
         
         
 
 
 
+        if (current_weapon.id_upgrade == 0)
+        {
+            upgrade_name1 = weapon_list[current_weapon.id_upgrade + 1].name;
+            upgrade_name2 = weapon_list[current_weapon.id_upgrade + 2].name;
+        }
+        else if (current_weapon.id_upgrade == 1 || current_weapon.id_upgrade == 2)
+        {
+            upgrade_name1 = weapon_list[current_weapon.id_upgrade + 2].name;
+            upgrade_name2 = weapon_list[current_weapon.id_upgrade + 3].name;
+        }
+        else if (current_weapon.id_upgrade == 3)
+        {
+            upgrade_name1 = weapon_list[current_weapon.id_upgrade + 3].name;
+            upgrade_name2 = "";
+        }
+        else if(current_weapon.id_upgrade == 4)
+        {
+            upgrade_name1 = weapon_list[current_weapon.id_upgrade + 3].name;
+            upgrade_name2 = weapon_list[current_weapon.id_upgrade + 4].name;
+        }
+        else if (current_weapon.id_upgrade == 5)
+        {
+            upgrade_name1 = weapon_list[current_weapon.id_upgrade + 3].name;
+            upgrade_name2 = "";
+        }
+        else if (current_weapon.id_upgrade == 6 )
+        {
+            upgrade_name1 = weapon_list[current_weapon.id_upgrade + 4].name;
+            upgrade_name2 = weapon_list[current_weapon.id_upgrade + 5].name;
+        }
+        else if (current_weapon.id_upgrade == 7 || current_weapon.id_upgrade == 8)
+        {
+            upgrade_name1 = weapon_list[current_weapon.id_upgrade + 5].name;
+            upgrade_name2 = weapon_list[current_weapon.id_upgrade + 6].name;
+        }
+        else if (current_weapon.id_upgrade == 9 || current_weapon.id_upgrade == 10 || current_weapon.id_upgrade == 11 || current_weapon.id_upgrade == 12 || current_weapon.id_upgrade == 13 || current_weapon.id_upgrade == 14 || current_weapon.id_upgrade == 15)
+        {
+            upgrade_name1 = weapon_list[current_weapon.id_upgrade + 6].name;
+            upgrade_name2 = "";
+        }
+        else if (current_weapon.id_upgrade == 16 || current_weapon.id_upgrade == 17 || current_weapon.id_upgrade == 18 || current_weapon.id_upgrade == 19 || current_weapon.id_upgrade == 20 || current_weapon.id_upgrade == 21)
+        {
+            upgrade_name1 = "+DMG";
+            upgrade_name2 = "+AMMO";
+        }
 
 
 
@@ -523,9 +854,7 @@ int main() {
 
 
         clear();
-        //farba(4);
-        cout << " Health: 100                  " << "X:" << player.x << "    Y:" << player.y << "     rotation: " << player.rotation <<"    Ammo:" <<player.ammo <<"/"<< player.maxAmmo <<"                    "<< enemy_list[0].health <<"                    "<< current_weapon.name <<"                  "<< kills <<"/"<< upgrade  <<endl;
-        //farba(2);
+        cout << " Health: 100                  " << "X:" << player.x << "    Y:" << player.y << "     rotation: " << player.rotation <<"    Ammo:" <<player.ammo <<"/"<< player.maxAmmo <<"               "<< enemy_list[0].health <<"  Current weapon: "<< current_weapon.name <<"   Weapon Upgrade 1: "<< upgrade_name1 <<"   Weapon Upgrade 2 :"<< upgrade_name2<<"   " << kills <<"/"<< upgrade + upgrade * multiplier <<endl;
         draw();
         if (bullet_list.size()>0)
         {
@@ -535,7 +864,6 @@ int main() {
 
 
     clear();
-    farba(7);
     return 0;
 }
 
