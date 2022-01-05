@@ -4,7 +4,6 @@
 #include <vector>
 #include "header.h"
 #include <ctype.h>
-#include <time.h>
 using namespace std;
 
 class player {
@@ -139,7 +138,6 @@ class Boosts {
 
 
 int main() {
-    srand(time(NULL));
 
     int kills = 0, upgrade = 10, Upgrade;
 
@@ -154,7 +152,7 @@ int main() {
     boosts_list_t boosts_list;
 
 
-        for (int i = 0 ; i < 3 ; i++)
+        for (int i = 0 ; i < 8 ; i++)
     {
         boosts_list.push_back(boosts);  // pridanie bulletu do listu (vectoru)
         boosts_list[i].x = random(2, (x - boosts_list[i].width - 2));
@@ -372,7 +370,7 @@ int main() {
                 else if (current_weapon.id_upgrade == 16 || current_weapon.id_upgrade == 17 || current_weapon.id_upgrade == 18 || current_weapon.id_upgrade == 19 || current_weapon.id_upgrade == 20 || current_weapon.id_upgrade == 21) {
                     current_weapon.dmg += multiplier;
                 }
-                multiplier = multiplier + multiplier*0.5;
+                multiplier += 0.5;
                 kills = 0;
             }
             player.ChangeWeapon(current_weapon.id_upgrade, current_weapon.fireRate, current_weapon.reloadTime, current_weapon.ammo, current_weapon.burst);
