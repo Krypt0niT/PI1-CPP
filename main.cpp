@@ -56,7 +56,7 @@ public:
     string rot;
     string tvar;
 
-    Bullet(int playerX, int playerY, int UPGRADE, string rotation, int playerW, int playerH)
+    Bullet(int playerX, int playerY, int UPGRADE, string rotation, int playerW, int playerH, bool Exist)
     {
 
         if (rotation == "vpravo")
@@ -81,6 +81,7 @@ public:
         }
 
         rot = rotation;
+        exist = Exist;
 
         //urcovanie bulletu
         switch (UPGRADE)
@@ -122,18 +123,44 @@ public:
 
     int EnemySlower = 2;
     int EnemySlowerTick = 0;
+};
+
+class Boosts { 
+    public:
+        int x;
+        int y;
+        
+        int width = 4;
+        int height = 2;
 
 };
 
+
+
 int main() {
 
-    int kills = 0, upgrade = 10;
+    int kills = 0, upgrade = 10, Upgrade;
 
     float multiplier = 0;
 
     player player;
 
+    typedef std::vector<Boosts> boosts_list_t;
+
+    Boosts boosts;
+    // Create the vector.
+    boosts_list_t boosts_list;
+
+
+        for (int i = 0 ; i < 8 ; i++)
+    {
+        boosts_list.push_back(boosts);  // pridanie bulletu do listu (vectoru)
+        boosts_list[i].x = random(2, (x - boosts_list[i].width - 2));
+        boosts_list[i].y = random(1, (y - boosts_list[i].height - 1));   
+    }
+
     typedef std::vector<Weapon> weapon_list_t;
+
 
     weapon_list_t weapon_list;
 
@@ -144,7 +171,7 @@ int main() {
     int dmg[22] = { 5, 10, 5, 7, 25, 5, 10, 40, 25, 7, 10, 15, 50, 35, 25, 10, 15, 20, 125, 40, 30, 15};
     int speed[22] = { 4, 4, 4, 4, 8, 6, 4, 8, 8, 6, 4, 4, 10, 8, 8, 6, 4, 4, 10, 8, 8, 6};
     string shape[22] = {".",".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", "." };
-    int pellets[22] = { 1, 1, 1, 3, 1, 1, 1, 1, 1, 3, 3, 1, 1, 1, 1, 3, 3, 1, 1, 1, 1, 1 };
+    int pellets[22] = { 1, 1, 1, 3, 1, 1, 3, 1, 1, 1, 3, 3, 1, 1, 1, 1, 3, 3, 1, 1, 1, 1 };
     int burst[22] = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 1, 1, 1, 1, 1, 3, 1 };
 
     for (int i = 0; i < 22; i++) {
@@ -168,46 +195,40 @@ int main() {
     // Create the vector.
     enemy_list_t enemy_list;
 
-    //----------SPAWN----------------
-    for (int i = 0 ; i < Enemies ; i++)
-    {
-        int r = random(0,3);
-        if (r == 0)
-        {
-            enemy_list.push_back(enemy);
-            enemy_list[i].y = 1;
-            enemy_list[i].x = random(1,205);
-        }
-        else if (r == 1)
-        {
-    enemy_list.push_back(enemy);
-            enemy_list[i].x = 1;
-            enemy_list[i].y = random(1,45);
-
-        }
-        else if (r == 2)
-        {
-            enemy_list.push_back(enemy);
-            enemy_list[i].y = 45;
-            enemy_list[i].x = random(1,205);
-        }
-        else if (r == 3)
-        {
-            enemy_list.push_back(enemy);
-            enemy_list[i].y = random(1,45);
-            enemy_list[i].x = 205;
-        }
-    }
-
-
     SetConsoleCP(437);
     SetConsoleOutputCP(437);
 
     while (game)
     {   
 
-        Bullet bullet(player.x,player.y, player.upgrade , player.rotation , player.width , player.height);
-    //-----------------dynamicka aktualizacia pre constructor----------
+        //strielanie pre brokovnice
+        Bullet bullet2(player.x, player.y, player.upgrade, player.rotation, player.width, player.height , false);
+        Bullet bullet3(player.x, player.y, player.upgrade, player.rotation, player.width, player.height , false);
+
+
+
+        if (current_weapon.pellets == 3) {
+            if (player.rotation == "vpravo" || player.rotation == "vlavo")
+            {
+                bullet2.y = player.y + 2;
+                bullet3.y = player.y - 0,5;
+            }
+            else if (player.rotation == "hore" || player.rotation == "dole")
+            {
+                bullet2.x = player.x + 4;
+                bullet3.x = player.x - 0,5;
+            }
+            bullet2.exist = true;
+            bullet3.exist = true;
+        }
+            
+
+
+
+       Bullet bullet(player.x, player.y, player.upgrade, player.rotation, player.width, player.height, true);
+     
+        
+        //-----------------dynamicka aktualizacia pre constructor----------
         player.fireCounter += 1;
         if(player.ammo == 0)
         {
@@ -220,6 +241,8 @@ int main() {
         }
 
         bullet.ChangeWeapon(current_weapon.dmg, current_weapon.speedX, current_weapon.speedY, current_weapon.tvar, current_weapon.pellets);
+        bullet2.ChangeWeapon(current_weapon.dmg, current_weapon.speedX, current_weapon.speedY, current_weapon.tvar, current_weapon.pellets);
+        bullet3.ChangeWeapon(current_weapon.dmg, current_weapon.speedX, current_weapon.speedY, current_weapon.tvar, current_weapon.pellets);
 
 
         if (GetKeyState('D') & 0x8000)
@@ -270,9 +293,13 @@ int main() {
         }
         if (GetKeyState(32) & 0x8000) // t.j. medzerník
 
-        {
+        {   
+            //strielanie pre burst rifle
             if (player.burst == 3 && player.ammo % 3 != 0) {
                 player.fireRate = 1;
+            }
+            else if (player.burst == 3 && player.ammo % 3 == 0) {
+                player.fireRate = fireRate[current_weapon.id_upgrade];
             }
 
 
@@ -283,13 +310,20 @@ int main() {
                 if (player.fireCounter >= player.fireRate)
                 {
                     bullet_list.push_back(bullet);
+                    
+                    //strielanie pre brokovnice
+                    if (bullet2.exist)
+                    {
+                        bullet_list.push_back(bullet2);
+                    }
+                    if (bullet3.exist) {
+                        bullet_list.push_back(bullet3);
+                    }
+
+
                     player.fireCounter = 0;
                     player.ammo -= 1;
                 }
-            }
-
-            if(player.burst == 3 && player.ammo % 3 == 0) {
-                player.fireRate = fireRate[current_weapon.id_upgrade];
             }
 
         }
@@ -334,7 +368,7 @@ int main() {
                     current_weapon = weapon_list[current_weapon.id_upgrade + 6];
                 }
                 else if (current_weapon.id_upgrade == 16 || current_weapon.id_upgrade == 17 || current_weapon.id_upgrade == 18 || current_weapon.id_upgrade == 19 || current_weapon.id_upgrade == 20 || current_weapon.id_upgrade == 21) {
-                    dmg[current_weapon.id_upgrade] += multiplier;
+                    current_weapon.dmg += multiplier;
                 }
                 multiplier = multiplier + multiplier*0.5;
                 kills = 0;
@@ -365,7 +399,7 @@ int main() {
                     current_weapon = weapon_list[current_weapon.id_upgrade + 6];
                 }
                 else if (current_weapon.id_upgrade == 16 || current_weapon.id_upgrade == 17 || current_weapon.id_upgrade == 18 || current_weapon.id_upgrade == 19 || current_weapon.id_upgrade == 20 || current_weapon.id_upgrade == 21) {
-                    dmg[current_weapon.id_upgrade] += multiplier;
+                    current_weapon.ammo += multiplier;
                 }
                 multiplier += 0.5;
                 kills = 0;
@@ -676,7 +710,7 @@ int main() {
         
 
 
-
+        //mozne upgrady
         if (current_weapon.id_upgrade == 0)
         {
             upgrade_name1 = weapon_list[current_weapon.id_upgrade + 1].name;
@@ -803,7 +837,19 @@ int main() {
             }
 
         }
+        //---------Boosts--------------
+        for (int i = 0; i < boosts_list.size(); i++)
+        {
+            
+            for(int j = 0; j < boosts_list[i].height; j++)
+            {
+                for(int k = 0; k < boosts_list[i].width; k++)
+                {
+                    screen[boosts_list[i].y + j][boosts_list[i].x +k] = "█";
         
+                }
+            }
+        }
 
 
 
@@ -853,8 +899,9 @@ int main() {
 
 
 
+        Upgrade = upgrade + upgrade * multiplier;
         clear();
-        cout << " Health: 100                  " << "X:" << player.x << "    Y:" << player.y << "     rotation: " << player.rotation <<"    Ammo:" <<player.ammo <<"/"<< player.maxAmmo <<"               "<< enemy_list[0].health <<"  Current weapon: "<< current_weapon.name <<"   Weapon Upgrade 1: "<< upgrade_name1 <<"   Weapon Upgrade 2 :"<< upgrade_name2<<"   " << kills <<"/"<< upgrade + upgrade * multiplier <<endl;
+        cout << "health: "<<player.health << "    X:" << player.x << "    Y:" << player.y<<"    Ammo:" <<player.ammo <<"/"<< player.maxAmmo  <<"  Current weapon: "<< current_weapon.name <<"   Weapon Upgrade 1: "<< upgrade_name1 <<"   Weapon Upgrade 2: "<< upgrade_name2<<"   " << kills <<"/"<< Upgrade <<endl;
         draw();
         if (bullet_list.size()>0)
         {
