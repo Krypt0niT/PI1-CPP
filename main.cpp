@@ -122,18 +122,46 @@ public:
 
     int EnemySlower = 2;
     int EnemySlowerTick = 0;
-
 };
+
+class Boosts { 
+    public:
+        int x;
+        int y;
+        
+        int width = 4;
+        int height = 2;
+    
+    };
+
+
 
 int main() {
 
+
     int kills = 0, upgrade = 10, Upgrade;
 
+    
     float multiplier = 0;
 
     player player;
 
+    typedef std::vector<Boosts> boosts_list_t;
+
+    Boosts boosts;
+    // Create the vector.
+    boosts_list_t boosts_list;
+
+
+        for (int i = 0 ; i < 8 ; i++)
+    {
+        boosts_list.push_back(boosts);  // pridanie bulletu do listu (vectoru)
+        boosts_list[i].x = random(2, (x - boosts_list[i].width - 2));
+        boosts_list[i].y = random(1, (y - boosts_list[i].height - 1));   
+    }
+
     typedef std::vector<Weapon> weapon_list_t;
+
 
     weapon_list_t weapon_list;
 
@@ -771,8 +799,20 @@ int main() {
             }
 
         }
+        //---------Boosts--------------
+        for (int i = 0; i < boosts_list.size(); i++)
+        {
+            
+            for(int j = 0; j < boosts_list[i].height; j++)
+            {
+                for(int k = 0; k < boosts_list[i].width; k++)
+                {
+                    screen[boosts_list[i].y + j][boosts_list[i].x +k] = "█";
 
-
+                }
+            }
+        }
+        
 
 
         //------------ENEMY-------------------
