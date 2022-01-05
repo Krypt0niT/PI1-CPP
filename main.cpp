@@ -56,7 +56,7 @@ public:
     string rot;
     string tvar;
 
-    Bullet(int playerX, int playerY, int UPGRADE, string rotation, int playerW, int playerH)
+    Bullet(int playerX, int playerY, int UPGRADE, string rotation, int playerW, int playerH, bool Exist)
     {
 
         if (rotation == "vpravo")
@@ -81,6 +81,7 @@ public:
         }
 
         rot = rotation;
+        exist = Exist;
 
         //urcovanie bulletu
         switch (UPGRADE)
@@ -138,10 +139,8 @@ class Boosts {
 
 int main() {
 
-
     int kills = 0, upgrade = 10, Upgrade;
 
-    
     float multiplier = 0;
 
     player player;
@@ -171,8 +170,8 @@ int main() {
     int fireRate[22] = { 7, 10, 4, 15, 16, 2, 13, 16, 7, 3, 7, 11, 10, 5, 10, 2, 4, 8, 15, 3, 10, 1 };
     int dmg[22] = { 5, 10, 5, 7, 25, 5, 10, 40, 25, 7, 10, 15, 50, 35, 25, 10, 15, 20, 125, 40, 30, 15};
     int speed[22] = { 4, 4, 4, 4, 8, 6, 4, 8, 8, 6, 4, 4, 10, 8, 8, 6, 4, 4, 10, 8, 8, 6};
-    string shape[22] = {"·","•", "·", "∴", "•", "·", "∴", "·", "·", "·", "∴", "∴", "●", "•", "•", "·", "∴", "∴", "●", "•", "•", "·" };
-    int pellets[22] = { 1, 1, 1, 3, 1, 1, 1, 1, 1, 3, 3, 1, 1, 1, 1, 3, 3, 1, 1, 1, 1, 1 };
+    string shape[22] = {"·","•", "·", "∴", "•", "·", "∴", "•", "•", "·", "∴", "∴", "●", "•", "•", "·", "∴", "∴", "●", "•", "•", "·" };
+    int pellets[22] = { 1, 1, 1, 3, 1, 1, 3, 1, 1, 1, 3, 3, 1, 1, 1, 1, 3, 3, 1, 1, 1, 1 };
     int burst[22] = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 1, 1, 1, 1, 1, 3, 1 };
 
     for (int i = 0; i < 22; i++) {
@@ -201,8 +200,34 @@ int main() {
     
     while (game)
     {
+     
+        //strielanie pre brokovnice
+        Bullet bullet2(player.x, player.y, player.upgrade, player.rotation, player.width, player.height , false);
+        Bullet bullet3(player.x, player.y, player.upgrade, player.rotation, player.width, player.height , false);
 
-        Bullet bullet(player.x,player.y, player.upgrade , player.rotation , player.width , player.height);
+
+
+        if (current_weapon.pellets == 3) {
+            if (player.rotation == "vpravo" || player.rotation == "vlavo")
+            {
+                bullet2.y = player.y + 2;
+                bullet3.y = player.y - 0,5;
+            }
+            else if (player.rotation == "hore" || player.rotation == "dole")
+            {
+                bullet2.x = player.x + 4;
+                bullet3.x = player.x - 0,5;
+            }
+            bullet2.exist = true;
+            bullet3.exist = true;
+        }
+            
+
+
+
+       Bullet bullet(player.x, player.y, player.upgrade, player.rotation, player.width, player.height, true);
+     
+
     //-----------------dynamicka aktualizacia pre constructor----------
         player.fireCounter += 1;
         if(player.ammo == 0)
@@ -216,6 +241,8 @@ int main() {
         }
 
         bullet.ChangeWeapon(current_weapon.dmg, current_weapon.speedX, current_weapon.speedY, current_weapon.tvar, current_weapon.pellets);
+        bullet2.ChangeWeapon(current_weapon.dmg, current_weapon.speedX, current_weapon.speedY, current_weapon.tvar, current_weapon.pellets);
+        bullet3.ChangeWeapon(current_weapon.dmg, current_weapon.speedX, current_weapon.speedY, current_weapon.tvar, current_weapon.pellets);
 
 
         if (GetKeyState('D') & 0x8000)
@@ -283,6 +310,17 @@ int main() {
                 if(player.fireCounter >= player.fireRate)
                 {
                 bullet_list.push_back(bullet);
+                    
+                    //strielanie pre brokovnice
+                    if (bullet2.exist)
+                    {
+                        bullet_list.push_back(bullet2);
+                    }
+                    if (bullet3.exist) {
+                        bullet_list.push_back(bullet3);
+                    }
+
+
                 player.fireCounter = 0;
                 player.ammo -= 1;
                 }
@@ -330,7 +368,7 @@ int main() {
                     current_weapon = weapon_list[current_weapon.id_upgrade + 6];
                 }
                 else if (current_weapon.id_upgrade == 16 || current_weapon.id_upgrade == 17 || current_weapon.id_upgrade == 18 || current_weapon.id_upgrade == 19 || current_weapon.id_upgrade == 20 || current_weapon.id_upgrade == 21) {
-                    dmg[current_weapon.id_upgrade] += multiplier;
+                    current_weapon.dmg += multiplier;
                 }
                 multiplier = multiplier + multiplier*0.5;
                 kills = 0;
@@ -361,7 +399,7 @@ int main() {
                     current_weapon = weapon_list[current_weapon.id_upgrade + 6];
                 }
                 else if (current_weapon.id_upgrade == 16 || current_weapon.id_upgrade == 17 || current_weapon.id_upgrade == 18 || current_weapon.id_upgrade == 19 || current_weapon.id_upgrade == 20 || current_weapon.id_upgrade == 21) {
-                    dmg[current_weapon.id_upgrade] += multiplier;
+                    current_weapon.ammo += multiplier;
                 }
                 multiplier += 0.5;
                 kills = 0;
@@ -863,7 +901,7 @@ int main() {
 
         Upgrade = upgrade + upgrade * multiplier;
         clear();
-        cout << "health: "<<player.health << "    X:" << player.x << "    Y:" << player.y<<"    Ammo:" <<player.ammo <<"/"<< player.maxAmmo  <<"  Current weapon: "<< current_weapon.name <<"   Weapon Upgrade 1: "<< upgrade_name1 <<"   Weapon Upgrade 2: "<< upgrade_name2<<"   " << kills <<"/"<< upgrade + upgrade * multiplier <<endl;
+        cout << "health: "<<player.health << "    X:" << player.x << "    Y:" << player.y<<"    Ammo:" <<player.ammo <<"/"<< player.maxAmmo  <<"  Current weapon: "<< current_weapon.name <<"   Weapon Upgrade 1: "<< upgrade_name1 <<"   Weapon Upgrade 2: "<< upgrade_name2<<"   " << kills <<"/"<< Upgrade <<endl;
         draw();
         if (bullet_list.size()>0)
         {
