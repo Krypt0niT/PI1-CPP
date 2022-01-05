@@ -4,6 +4,7 @@
 #include <vector>
 #include "header.h"
 #include <ctype.h>
+#include <time.h>
 using namespace std;
 
 class player {
@@ -137,7 +138,7 @@ class Boosts {
 
 
 int main() {
-
+    srand(time(NULL));
 
     int kills = 0, upgrade = 10, Upgrade;
 
@@ -153,7 +154,7 @@ int main() {
     boosts_list_t boosts_list;
 
 
-        for (int i = 0 ; i < 8 ; i++)
+        for (int i = 0 ; i < 3 ; i++)
     {
         boosts_list.push_back(boosts);  // pridanie bulletu do listu (vectoru)
         boosts_list[i].x = random(2, (x - boosts_list[i].width - 2));
