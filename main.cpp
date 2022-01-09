@@ -152,7 +152,7 @@ int main() {
     boosts_list_t boosts_list;
 
 
-        for (int i = 0 ; i < 8 ; i++)
+        for (int i = 0 ; i < 1 ; i++)
     {
         boosts_list.push_back(boosts);  // pridanie bulletu do listu (vectoru)
         boosts_list[i].x = random(2, (x - boosts_list[i].width - 2));
