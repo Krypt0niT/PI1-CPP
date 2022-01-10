@@ -8,8 +8,8 @@ using namespace std;
 
 class player {
 public:
-    int x = 105;
-    int y = 25;
+    int x = 103;
+    int y = 22;
     int width = 5;
     int height = 3;
     int health = 100;
@@ -129,9 +129,19 @@ class Boosts {
     public:
         int x;
         int y;
+        string BoostType;
+        int AliveTime = 100;
+        int AliveTimeTick = 0;
+        bool available = true;
         
         int width = 4;
         int height = 2;
+        Boosts(int X, int Y, string type)
+        {
+            x = X;
+            y = Y;
+            BoostType = type;
+        }
     
     };
 
@@ -147,17 +157,12 @@ int main() {
 
     typedef std::vector<Boosts> boosts_list_t;
 
-    Boosts boosts;
+    
     // Create the vector.
     boosts_list_t boosts_list;
 
 
-        for (int i = 0 ; i < 1 ; i++)
-    {
-        boosts_list.push_back(boosts);  // pridanie bulletu do listu (vectoru)
-        boosts_list[i].x = random(2, (x - boosts_list[i].width - 2));
-        boosts_list[i].y = random(1, (y - boosts_list[i].height - 1));   
-    }
+
 
     typedef std::vector<Weapon> weapon_list_t;
 
@@ -200,6 +205,11 @@ int main() {
     
     while (game)
     {
+
+
+        farba(15);
+        EnemyHit = false;
+        HealHit = false;
      
         //strielanie pre brokovnice
         Bullet bullet2(player.x, player.y, player.upgrade, player.rotation, player.width, player.height , false);
@@ -224,8 +234,8 @@ int main() {
             
 
 
-
-       Bullet bullet(player.x, player.y, player.upgrade, player.rotation, player.width, player.height, true);
+        Boosts boosts(random(4,(x-11)),random(2,(y-4)),"Heal");
+        Bullet bullet(player.x, player.y, player.upgrade, player.rotation, player.width, player.height, true);
      
 
     //-----------------dynamicka aktualizacia pre constructor----------
@@ -699,15 +709,59 @@ int main() {
                             {
 
                                 player.health -= enemy_list[enemy].dmg;  
+                                EnemyHit = true;
                             }
                         }
                     }
                 }
             }
+        } 
+        //--------BOOSTS GENERATE--------------
+        if (BoostsGeneratorTick >= BoostsGenerator)
+        {
+
+            
+            boosts_list.push_back(boosts);  // pridanie bulletu do listu (vectoru)
+            BoostsGeneratorTick = 0;
+            BoostsGenerator = random(250,500);
+        
+        }
+        else
+        {
+            BoostsGeneratorTick += 1;
         }
 
-        
-        
+
+        //------------BOOSTS COLLISION-------------------
+        for (int boost = 0 ; boost < boosts_list.size() ; boost++)
+        {
+            if (boosts_list[boost].available)
+            {
+                if (boosts_list[boost].x + boosts_list[boost].width >= player.x )
+                {
+                    if (boosts_list[boost].x <= player.x + player.width)
+                    {
+                        if (boosts_list[boost].y + boosts_list[boost].height >= player.y )
+                        {
+                            if (boosts_list[boost].y <= player.y + player.height)
+                            {
+                                if (boosts_list[boost].BoostType == "Heal")
+                                {
+                                    HealHit = true;
+                                    boosts_list[boost].available = false;
+                                    player.health += 20;
+
+                                    if (player.health >= 100)
+                                    {
+                                        player.health = 100;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } 
 
 
         //mozne upgrady
@@ -755,6 +809,42 @@ int main() {
         {
             upgrade_name1 = "+DMG";
             upgrade_name2 = "+AMMO";
+        }
+
+        //----------FARBA POZADIA----------
+        if (HealHit)
+        {
+            farba(2);
+        }
+        else if (EnemyHit)
+        {
+            farba(4);
+        }
+        else if (player.health <= 0)
+        {
+            farba(15);
+            game = false;
+            clear();
+            pozadie();
+            screen[y/2][103] = "K";
+            screen[y/2][104] = "O";
+            screen[y/2][105] = "N";
+            screen[y/2][106] = "I";
+            screen[y/2][107] = "E";
+            screen[y/2][108] = "C";
+            while (true)
+            {
+            draw();
+            clear();
+            }
+        }
+        else if (player.health < 50)
+        {
+            farba(8); 
+        }
+        else if (player.health < 100)
+        {
+            farba(7);
         }
 
 
@@ -840,13 +930,16 @@ int main() {
         //---------Boosts--------------
         for (int i = 0; i < boosts_list.size(); i++)
         {
-            
-            for(int j = 0; j < boosts_list[i].height; j++)
+            if (boosts_list[i].available)
             {
-                for(int k = 0; k < boosts_list[i].width; k++)
+            
+                for(int j = 0; j < boosts_list[i].height; j++)
                 {
-                    screen[boosts_list[i].y + j][boosts_list[i].x +k] = "█";
+                    for(int k = 0; k < boosts_list[i].width; k++)
+                    {
+                        screen[boosts_list[i].y + j][boosts_list[i].x +k] = "█";
 
+                    }
                 }
             }
         }
@@ -901,7 +994,7 @@ int main() {
 
         Upgrade = upgrade + upgrade * multiplier;
         clear();
-        cout << "health: "<<player.health << "    X:" << player.x << "    Y:" << player.y<<"    Ammo:" <<player.ammo <<"/"<< player.maxAmmo  <<"  Current weapon: "<< current_weapon.name <<"   Weapon Upgrade 1: "<< upgrade_name1 <<"   Weapon Upgrade 2: "<< upgrade_name2<<"   " << kills <<"/"<< Upgrade <<endl;
+        cout << "health: "<<player.health << "    X:" << player.x << "    Y:" << player.y<<"    Ammo:" <<player.ammo <<"/"<< player.maxAmmo  <<"  Current weapon: "<< current_weapon.name <<"   Weapon Upgrade 1: "<< upgrade_name1 <<"   Weapon Upgrade 2: "<< upgrade_name2<<"   " << kills <<"/"<< Upgrade <<"\t"<<BoostsGeneratorTick<<"/"<<BoostsGenerator<<endl;
         draw();
         if (bullet_list.size()>0)
         {

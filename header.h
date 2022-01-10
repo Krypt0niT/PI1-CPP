@@ -13,6 +13,10 @@ int wave = 0;
 string screen[y][x];
 bool game = true;
 string RiadkovyText= "";
+int BoostsGeneratorTick = 0;
+int BoostsGenerator = 500;
+bool EnemyHit = false;
+bool HealHit = false;
 
 
 //bullety
@@ -211,12 +215,7 @@ void farba(int farba)                             // farba popredia + farba poza
 
 int random(int a,int b)
 {
-    /*
-    random_device dev;
-    mt19937 rng(dev());
-    uniform_int_distribution<mt19937::result_type> dist6(a,b); // distribution in range [1, 6]
-    return dist6(rng);
-    */
+
    int randomNum = rand() % b + a;
    return randomNum;
 
