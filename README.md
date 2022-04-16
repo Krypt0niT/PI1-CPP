@@ -1,6 +1,6 @@
 # PI1-CPP
 
-Názov:(Pracujeme na ňom).
+Názov: Counter: OFFENSIVE.
 
 Námet na hru: Zombie Hunters Arena
 
